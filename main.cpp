@@ -22,7 +22,7 @@ are the same as the vertex values */
 
 #include "glm.h"
 #include "textfile.h"
-#include "imageIO.c"
+//#include "imageIO.c"
 
 #ifndef PI
 #define PI (3.1415926535)
@@ -85,7 +85,7 @@ void updateSeeAt(void)
 
 void drawOBJ()
 {
-///*
+/*
      int i, v;
 
      if (! myObj) return;
@@ -108,7 +108,7 @@ void drawOBJ()
         }
 	 glEnd();
      }
-//*/
+*/
 
 
 //
@@ -131,6 +131,22 @@ void drawOBJ()
 //        group = group->next;
 //     }
 
+    if (!myObj) return;
+
+    for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, myObj->materials[groups->material].textureID);
+        for(unsigned i=0; i<groups->numtriangles; i+=1) {
+            glBegin(GL_TRIANGLES);
+                for (int j=0; j<3; j+=1)
+                {
+                    glNormal3fv(&myObj->normals[myObj->triangles[groups->triangles[i]].nindices[j]*3]);
+                    glTexCoord2fv(&myObj->texcoords[myObj->triangles[groups->triangles[i]].tindices[j]*2]);
+                    glVertex3fv(&myObj->vertices[myObj->triangles[groups->triangles[i]].vindices[j]*3]);
+                }
+            glEnd();
+        }
+    }
 }
 
 void display(void)
@@ -540,10 +556,10 @@ int main(int argc, char **argv)
 	// glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
     glewInit();
 
-    glDisable(GL_TEXTURE_2D);
-    glmDraw(MODEL,GLM_SMOOTH|GLM_MATERIAL);
-    glEnable(GL_TEXTURE_2D);
-    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
+//    glDisable(GL_TEXTURE_2D);
+//    glmDraw(MODEL,GLM_SMOOTH|GLM_MATERIAL);
+//    glEnable(GL_TEXTURE_2D);
+//    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
 
 //	myObj = glmReadOBJ("sponza.obj");
 	 myObj = glmReadOBJ("object/ben/ben_00.obj");

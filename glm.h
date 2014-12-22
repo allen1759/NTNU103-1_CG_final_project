@@ -40,6 +40,7 @@ typedef struct _GLMmaterial
   GLfloat specular[4];          /* specular component */
   GLfloat emmissive[4];         /* emmissive component */
   GLfloat shininess;            /* specular exponent */
+    GLuint  textureID;          // 這裡增加新的東西可以吃 texture id
 } GLMmaterial;
 
 /* GLMtriangle: Structure that defines a triangle in a model.

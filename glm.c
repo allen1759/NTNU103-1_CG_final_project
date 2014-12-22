@@ -12,6 +12,8 @@
 */
 
 #include <windows.h>
+#include "TGALoader.h"
+#include <GL/glew.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -22,6 +24,9 @@
 
 
 #define T(x) (model->triangles[(x)])
+
+
+using namespace NS_TGALOADER;
 
 
 /* _GLMnode: general purpose node */
@@ -362,6 +367,24 @@ glmReadMTL(GLMmodel* model, char* name)
                 break;
             }
             break;
+        case 'm':                   //這裡多增加一個case
+            {
+                if(strncmp(buf, "map_Ka", 6) == 0)
+                {
+                    fscanf(file, "%s", buf);
+                    IMAGE texture;
+                    texture.LoadTGA(buf);
+                    glGenTextures(1, &model->materials[nummaterials].textureID);
+                    glBindTexture(GL_TEXTURE_2D, model->materials[nummaterials].textureID);
+                    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, texture.getWidth(),texture.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, texture.getDataForOpenGL());
+                    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+                    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+                    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+                    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+                }
+                break;
+            }
             default:
                 /* eat up rest of line */
                 fgets(buf, sizeof(buf), file);

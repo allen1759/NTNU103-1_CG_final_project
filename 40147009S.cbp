@@ -12,7 +12,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
@@ -39,9 +38,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="glm.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="TGALoader.cpp" />
+		<Unit filename="TGALoader.h" />
+		<Unit filename="glm.cpp" />
 		<Unit filename="glm.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="textfile.cpp" />
