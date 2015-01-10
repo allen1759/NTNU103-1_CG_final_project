@@ -26,11 +26,12 @@ are the same as the vertex values */
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
+#include "CgluEye.h"
+#include "GlobalVariable.h"
 using namespace std;
 
-#ifndef PI
-#define PI (3.1415926535)
-#endif // PI
+CgluEye testeye;
+
 
 static GLfloat theta[] = {0.0,0.0,0.0};
 static GLint axis = 2;

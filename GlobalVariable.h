@@ -1,0 +1,8 @@
+#ifndef GLOBALVARIABLE_H_INCLUDED
+#define GLOBALVARIABLE_H_INCLUDED
+
+#ifndef PI
+#define PI (3.1415926535)
+#endif // PI
+
+#endif // GLOBALVARIABLE_H_INCLUDED
