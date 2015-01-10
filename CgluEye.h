@@ -25,7 +25,10 @@ public:
     void setEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
     void setNor(GLfloat n[]);
     void setNor(GLfloat, GLfloat, GLfloat);
-    void updateLookAt(GLfloat xyAng, double dragX);
+    void setXYAng(GLfloat ang) { xzAng = ang; adjust(); }
+    void setDrag(GLfloat x, GLfloat y) { dragX=x; dragY=y; }
+    void addXYAng(GLfloat ang) { xzAng += ang; adjust(); }
+    void updateLookAt();
     void LookAt();
 
 protected:
@@ -33,6 +36,9 @@ private:
     GLfloat sEye[3];
     GLfloat sAt[3];
     GLfloat sNor[3];
+    GLfloat xzAng, yAng;
+    double dragX, dragY;
+    void adjust();
 };
 
 #endif // CGLUEYE_H

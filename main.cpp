@@ -66,7 +66,7 @@ void display(void)
 /* display callback, clear frame buffer and z buffer,
    rotate cube and draw, swap buffers */
 //   updateSeeAt();
-   ThirdPerson.updateLookAt(sAngle, rotateX);
+   ThirdPerson.updateLookAt();
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	setProjectionMatrix(1, 1);
@@ -134,12 +134,14 @@ void mouse(int btn, int state, int x, int y)
     if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
 		drag = false;
-		sAngle += (x - old_rotateX)/10;
+		ThirdPerson.addXYAng( (x - old_rotateX)/10 );
+//		sAngle += (x - old_rotateX)/10;
 //		std::cout << "new x " << x << std::endl;
 //		std::cout << "sangle change " << x-old_rotateX << std::endl << std::endl;
 
 		rotateX = 0;   //沒有歸零會有 Error
 		rotateY = 0;
+		ThirdPerson.setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
@@ -153,16 +155,17 @@ void mouse(int btn, int state, int x, int y)
 void motion(int x, int y)
 {
 	if(!drag) return;
-	rotateX = (x - old_rotateX)/10;
-	rotateY = (y - old_rotateY)/10;
+	ThirdPerson.setDrag( 1.0*(x - old_rotateX)/10, 1.0*(y - old_rotateY)/10 );
+//	rotateX = (x - old_rotateX)/10;
+//	rotateY = (y - old_rotateY)/10;
 //	std::cout << "rotate x " << rotateX << std::endl;
 
 //	rad = (double) (PI*sAngle/180.0);
 //    sAt[0] = (double)(sEye[0] + 100*cos(rad));
 //    sAt[2] = (double)(sEye[2] + 100*sin(rad));
 //    sAt[1] = sEye[1];
-    //updateSeeAt();
-    ThirdPerson.updateLookAt(sAngle, rotateX);
+    //ThirdPerson.addXYAng(rotateX);
+    ThirdPerson.updateLookAt();
 
 	glutPostRedisplay();
 }
@@ -244,16 +247,18 @@ void keyboard(unsigned char key, int x, int y)
     // 旋轉指令
     case 'A':
     case 'a':
-        sAngle -= 5.0;
-        if(sAngle > 360.0) sAngle -= 360.0;
-        if(sAngle < -360.0) sAngle += 360.0;
+        ThirdPerson.addXYAng( -5.0 );
+//        sAngle -= 5.0;
+//        if(sAngle > 360.0) sAngle -= 360.0;
+//        if(sAngle < -360.0) sAngle += 360.0;
         break;
 
     case 'D':
     case 'd':
-        sAngle += 5.0;
-        if(sAngle > 360.0) sAngle -= 360.0;
-        if(sAngle < -360.0) sAngle += 360.0;
+        ThirdPerson.addXYAng( +5.0);
+//        sAngle += 5.0;
+//        if(sAngle > 360.0) sAngle -= 360.0;
+//        if(sAngle < -360.0) sAngle += 360.0;
         break;
 
     // Zoom 指令
@@ -270,7 +275,7 @@ void keyboard(unsigned char key, int x, int y)
         break;
     }
     //updateSeeAt();
-    ThirdPerson.updateLookAt(sAngle, rotateX);
+    ThirdPerson.updateLookAt();
 
     glutPostRedisplay();
 }
@@ -420,7 +425,7 @@ int main(int argc, char **argv)
 //    myObj = glmReadOBJ("Car_02_Obj.obj");
 //    myObj = glmReadOBJ("object/ben/ben_00.obj");
     string name ("object/ben/ben_");
-    for(int i=0; i<5; i+=1) {
+    for(int i=0; i<1; i+=1) {
 //    for(int i=0; i<30; i+=1) {
         stringstream ss;
         ss << name;
