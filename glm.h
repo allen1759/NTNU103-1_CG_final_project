@@ -11,9 +11,9 @@
 
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
+//#ifdef __cplusplus
+//extern "C" {
+//#endif // __cplusplus
 
 #include <GL/glut.h>
 
@@ -281,6 +281,6 @@ glmWeld(GLMmodel* model, GLfloat epsilon);
 GLubyte*
 glmReadPPM(char* filename, int* width, int* height);
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+//#ifdef __cplusplus
+//}
+//#endif // __cplusplus

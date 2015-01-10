@@ -19,10 +19,14 @@ are the same as the vertex values */
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <math.h>
+#include <cstring>
+#include <string>
+#include <sstream>
 
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
+using namespace std;
 
 #ifndef PI
 #define PI (3.1415926535)
@@ -32,7 +36,7 @@ static GLfloat theta[] = {0.0,0.0,0.0};
 static GLint axis = 2;
 static int moving = 0;
 
-// static GLfloat sEye[3] = {0.0, 0.0, 1.0};
+//static GLfloat sEye[3] = {0.0, -2.0, 0.0};
 static GLfloat sEye[3] = {0.0, 0.0, 4.0};
 static GLfloat sAt[3] = {0.0, 0.0, 0.0};
 static GLfloat sAngle = -90.0;
@@ -48,6 +52,8 @@ double old_rotateX;     //剛按下滑鼠時的視窗座標
 double old_rotateY;
 
 GLMmodel *myObj = NULL;
+GLMmodel * objarray[30];
+int objind = 0;
 
 int wave_mode = 1;
 
@@ -132,8 +138,12 @@ void drawOBJ()
 //     }
 
     if (!myObj) return;
-
+cout << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
+        int tmp = myObj->materials[groups->material].textureID;
+        cout << "groups->name = " << groups->name << endl;
+        cout << "id = " << tmp ;
+        cout << "  material name = " << myObj->materials[groups->material].name << endl;
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, myObj->materials[groups->material].textureID);
         for(unsigned i=0; i<groups->numtriangles; i+=1) {
@@ -147,6 +157,46 @@ void drawOBJ()
             glEnd();
         }
     }
+
+/*
+     int i, v;
+     float *p;
+
+     for (int i=0; i<myObj->numtriangles; i++) {
+	 // The current triangle is: myObj->triangles[i]
+     glBegin(GL_TRIANGLES);
+        for (v=0; v<3; v++) {
+            // Process the normals.
+            if (myObj->numnormals > 0) {
+               p = & myObj->normals[ myObj->triangles[i].nindices[v]*3 ];
+               glNormal3fv(p);
+            }
+
+            // Process the texture coordinates.
+            if (myObj->numtexcoords > 0) {
+               p = & myObj->texcoords[ myObj->triangles[i].tindices[v]*2 ];
+
+               //***
+               //*** For LAB 6: Add the missing cde here.
+               //***
+               glTexCoord2fv(p);
+            }
+
+            // Process the vertices.
+            // Assume that the 3 vertices are P[n0], P[n1], P[n2],
+            // P[] is equivalent to myObj->vertices, and n0,n1,n2 is related to myObj->triangles[i].vindices[0,1,2]
+		    p = & myObj->vertices[ myObj->triangles[i].vindices[v]*3 ];
+
+		    // Set the RGB based on XYZ.
+		    // We are assuming that the XYZ are within [-1. 1].
+//		    glColor3f( p[0]*0.8+0.2, p[1]*0.8+0.2, p[2]*0.8+0.2 );
+//		    setMaterial_RGB( p[0]*0.5+0.5, p[1]*0.5+0.5, p[2]*0.5+0.5 );
+		    glVertex3fv( p );
+        }
+	 glEnd();
+     }
+
+*/
 }
 
 void display(void)
@@ -258,6 +308,14 @@ void keyboard(unsigned char key, int x, int y)
     {
     case 0x1B:      // ESC key ASCII code
         exit(0);
+        break;
+
+    case 'p':
+    case 'P':
+        objind += 1;
+        objind %= 30;
+        myObj = objarray[objind];
+        glmUnitize(myObj);
         break;
 
     case '+':
@@ -409,80 +467,6 @@ void printInfoLog(GLhandleARB obj)
     }
 }
 
-/*
-void setShaders(){
-	static int inited = 0;
-	char *vs = NULL,*fs = NULL,*fs2 = NULL;
-
-	if (! inited) {
-		v = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-		f = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-		f2 = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-	}
-
-//	if (wave_mode)
-//		vs = textFileRead("wave.vert");
-//	else
-//		vs = textFileRead("toonf2.vert");
-//	fs = textFileRead("toonf2.frag");
-
-    if ( wave_mode ) {
-        fs = textFileRead("toonf2.frag");
-        vs = textFileRead("toonf2.vert");
-    }
-	else {
-        // fs = textFileRead("fshader.glsl");
-        fs = textFileRead("phong.frag");
-        vs = textFileRead("phong.vert");
-	}
-
-	const char * vv = vs;
-	const char * ff = fs;
-
-	glShaderSourceARB(v, 1, &vv,NULL);
-	glShaderSourceARB(f, 1, &ff,NULL);
-
-	free(vs);free(fs);
-
-	glCompileShaderARB(v);
-	glCompileShaderARB(f);
-
-	printInfoLog(v);
-	printInfoLog(f);
-	printInfoLog(f2);
-
-	if (! inited) {
-		p = glCreateProgramObjectARB();
-	}
-	// vertex shader processing
-	glAttachObjectARB(p,v);
-            glLinkProgramARB(p);
-            printInfoLog(p);
-
-            glUseProgramObjectARB(p);
-            if( !wave_mode ) {
-                glUniform3fARB(glGetUniformLocationARB(p, "ED"),
-                               sAt[0]-sEye[0], sAt[1]-sEye[1], sAt[2]-sEye[2]);
-            }
-
-    // fragement shader processing
-    glAttachObjectARB(p,f);
-
-	glLinkProgramARB(p);
-	printInfoLog(p);
-
-	glUseProgramObjectARB(p);
-
-	loc = glGetUniformLocationARB(p, "angle");
-	if( !wave_mode ) {
-	    int n=1;
-        glUniform4fvARB(glGetUniformLocationARB(p, "ambient"), n, myObj->materials->ambient);
-        glUniform4fvARB(glGetUniformLocationARB(p, "diffuse"),n, myObj->materials->diffuse );
-        glUniform4fvARB(glGetUniformLocationARB(p, "specular"), n, myObj->materials->specular );
-	}
-}
-*/
-
 void setShaders() {
 	static int inited = 0;
 	char *vs = NULL,*fs = NULL;
@@ -494,14 +478,16 @@ void setShaders() {
 	}
 
 	if (wave_mode == 1) {
-		vs = textFileRead("newphong.vert");
-		fs = textFileRead("newphong.frag");
-//		vs = textFileRead("newshader.vert");
-//		fs = textFileRead("newshader.frag");
+    fs = textFileRead("shader/myshader.f");
+    vs = textFileRead("shader/myshader.v");
+//		vs = textFileRead("shader/newphong.vert");
+//		fs = textFileRead("shader/newphong.frag");
+//		vs = textFileRead("shader/newshader.vert");
+//		fs = textFileRead("shader/newshader.frag");
 	}
 	else {
-        vs = textFileRead("toonf2.vert");
-        fs = textFileRead("toonf2.frag");
+        vs = textFileRead("shader/toonf2.vert");
+        fs = textFileRead("shader/toonf2.frag");
 	}
 
 	const char * vv = vs;
@@ -533,6 +519,12 @@ void setShaders() {
 	printInfoLog(p);
 
     glUseProgramObjectARB(p);
+
+    glUniform1iARB(glGetUniformLocationARB(p, "texture"), 0);
+    glUniform3fARB(glGetUniformLocationARB(p, "light"), light0_pos[0], light0_pos[1], light0_pos[2]);
+    glUniform4fARB(glGetUniformLocationARB(p, "l_ambient"), 1.0, 1.0, 1.0, 1.0 );
+    glUniform4fARB(glGetUniformLocationARB(p, "l_diffuse"), 1.0, 1.0, 1.0, 1.0 );
+    glUniform4fARB(glGetUniformLocationARB(p, "l_specular"), 1.0, 1.0, 1.0, 1.0 );
 }
 
 
@@ -553,7 +545,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
 
-	// glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	glClearColor( 0.0f, 0.5f, 1.0f, 0.0f );
     glewInit();
 
 //    glDisable(GL_TEXTURE_2D);
@@ -561,8 +553,24 @@ int main(int argc, char **argv)
 //    glEnable(GL_TEXTURE_2D);
 //    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
 
-//	myObj = glmReadOBJ("sponza.obj");
-	 myObj = glmReadOBJ("object/ben/ben_00.obj");
+//    myObj = glmReadOBJ("sponza.obj");
+//    myObj = glmReadOBJ("ben_00.obj");
+//    myObj = glmReadOBJ("Car_02_Obj.obj");
+//    myObj = glmReadOBJ("object/ben/ben_00.obj");
+    string name ("object/ben/ben_");
+    for(int i=0; i<30; i+=1) {
+        stringstream ss;
+        ss << name;
+        if(i<10) ss << "0";
+        ss << i;
+        ss << ".obj";
+        cout << "open the file : "<< ss.str() << endl;
+        char filename[100];
+        strcpy(filename, ss.str().c_str());
+        objarray[i] = glmReadOBJ(filename);
+    }
+    myObj = objarray[0];
+
 
 
     glmUnitize(myObj);
