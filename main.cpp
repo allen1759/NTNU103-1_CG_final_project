@@ -1,75 +1,23 @@
-/* Rotating cube with color interpolation */
-
-/* Demonstration of use of homogeneous coordinate
-transformations and simple data structure for representing
-cube from Chapter 4 */
-
-/*Both normals and colors are assigned to the vertices */
-/*Cube is centered at origin so (unnormalized) normals
-are the same as the vertex values */
-
-
-
 #include <Windows.h>    // for solving the Code::Blocks errors
 #define GLEW_STATIC
 
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/glew.h>
-#include <GL/glut.h>
 #include <math.h>
 #include <cstring>
 #include <string>
 #include <sstream>
-
+#include "GlobalVariable.h"
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
 #include "CgluEye.h"
-#include "GlobalVariable.h"
 using namespace std;
-
-CgluEye testeye;
-
-
-static GLfloat theta[] = {0.0,0.0,0.0};
-static GLint axis = 2;
-static int moving = 0;
-
-//static GLfloat sEye[3] = {0.0, -2.0, 0.0};
-static GLfloat sEye[3] = {0.0, 0.0, 4.0};
-static GLfloat sAt[3] = {0.0, 0.0, 0.0};
-static GLfloat sAngle = -90.0;
-//static GLdouble objPos[3] = {0.0, 0.0, 0.0};
-static double speed = 0.02;         //所有移動的速度 不含旋轉
-static double zoomFactor = 1.0;
-double rad;
-
-bool drag = false;
-double rotateX;			//拖曳後的相對座標，決定要旋轉幾度
-double rotateY;
-double old_rotateX;     //剛按下滑鼠時的視窗座標
-double old_rotateY;
 
 GLMmodel *myObj = NULL;
 GLMmodel * objarray[30];
 int objind = 0;
-
-int wave_mode = 1;
-
-GLint loc;
-GLhandleARB v,f,f2,p;
-
-int light_theta = 0;
-
-GLfloat diffuse0[]={1.0, 1.0, 1.0, 1.0};
-GLfloat ambient0[]={1.0, 1.0, 1.0, 1.0};
-GLfloat specular0[]={1.0, 1.0, 1.0, 1.0};
-// GLfloat light0_pos[]={1.0, 2.0, 3,0, 1.0};
-//GLfloat light0_pos[]={3.0, 0.0, 0.0, 1.0};
-GLfloat light0_pos[]={3.0, 1.0, 0.0, 0.5};
-GLfloat light0_dir[]={-3.0, 0.0, 0.0, -0.5};
 
 void setShaders();
 
@@ -158,46 +106,6 @@ cout << myObj->pathname << endl;
             glEnd();
         }
     }
-
-/*
-     int i, v;
-     float *p;
-
-     for (int i=0; i<myObj->numtriangles; i++) {
-	 // The current triangle is: myObj->triangles[i]
-     glBegin(GL_TRIANGLES);
-        for (v=0; v<3; v++) {
-            // Process the normals.
-            if (myObj->numnormals > 0) {
-               p = & myObj->normals[ myObj->triangles[i].nindices[v]*3 ];
-               glNormal3fv(p);
-            }
-
-            // Process the texture coordinates.
-            if (myObj->numtexcoords > 0) {
-               p = & myObj->texcoords[ myObj->triangles[i].tindices[v]*2 ];
-
-               //***
-               //*** For LAB 6: Add the missing cde here.
-               //***
-               glTexCoord2fv(p);
-            }
-
-            // Process the vertices.
-            // Assume that the 3 vertices are P[n0], P[n1], P[n2],
-            // P[] is equivalent to myObj->vertices, and n0,n1,n2 is related to myObj->triangles[i].vindices[0,1,2]
-		    p = & myObj->vertices[ myObj->triangles[i].vindices[v]*3 ];
-
-		    // Set the RGB based on XYZ.
-		    // We are assuming that the XYZ are within [-1. 1].
-//		    glColor3f( p[0]*0.8+0.2, p[1]*0.8+0.2, p[2]*0.8+0.2 );
-//		    setMaterial_RGB( p[0]*0.5+0.5, p[1]*0.5+0.5, p[2]*0.5+0.5 );
-		    glVertex3fv( p );
-        }
-	 glEnd();
-     }
-
-*/
 }
 
 void display(void)
@@ -405,11 +313,6 @@ void keyboard(unsigned char key, int x, int y)
         zoomFactor -= 0.05;
         break;
     }
-    // 觀察點
-//    rad = (double) (PI*sAngle/180.0);
-//    sAt[0] = (double)(sEye[0] + 100*cos(rad));
-//    sAt[2] = (double)(sEye[2] + 100*sin(rad));
-//    sAt[1] = sEye[1];
     updateSeeAt();
 
     glutPostRedisplay();
@@ -470,6 +373,7 @@ void printInfoLog(GLhandleARB obj)
 
 void setShaders() {
 	static int inited = 0;
+	static GLhandleARB v,f,f2,p;
 	char *vs = NULL,*fs = NULL;
 
 	if (! inited) {
@@ -546,7 +450,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
 
-	glClearColor( 0.0f, 0.5f, 1.0f, 0.0f );
+	glClearColor( 0.0f, 0.8f, 1.0f, 0.0f );
     glewInit();
 
 //    glDisable(GL_TEXTURE_2D);
@@ -559,7 +463,8 @@ int main(int argc, char **argv)
 //    myObj = glmReadOBJ("Car_02_Obj.obj");
 //    myObj = glmReadOBJ("object/ben/ben_00.obj");
     string name ("object/ben/ben_");
-    for(int i=0; i<30; i+=1) {
+    for(int i=0; i<5; i+=1) {
+//    for(int i=0; i<30; i+=1) {
         stringstream ss;
         ss << name;
         if(i<10) ss << "0";
@@ -571,8 +476,6 @@ int main(int argc, char **argv)
         objarray[i] = glmReadOBJ(filename);
     }
     myObj = objarray[0];
-
-
 
     glmUnitize(myObj);
 
