@@ -40,12 +40,12 @@ void updateSeeAt(void)
 void drawOBJ()
 {
     if (!myObj) return;
-cout << myObj->pathname << endl;
+//cout << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
-        int tmp = myObj->materials[groups->material].textureID;
-        cout << "groups->name = " << groups->name << endl;
-        cout << "id = " << tmp ;
-        cout << "  material name = " << myObj->materials[groups->material].name << endl;
+//        int tmp = myObj->materials[groups->material].textureID;
+//        cout << "groups->name = " << groups->name << endl;
+//        cout << "id = " << tmp ;
+//        cout << "  material name = " << myObj->materials[groups->material].name << endl;
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, myObj->materials[groups->material].textureID);
         for(unsigned i=0; i<groups->numtriangles; i+=1) {
@@ -86,10 +86,9 @@ void display(void)
 
 
     ThirdPerson.LookAt();
-//    gluLookAt(sEye[0], sEye[1], sEye[2],
-//              sAt[0], sAt[1], sAt[2], 0.0, 1.0, 0.0);
 
-glEnable(GL_COLOR_MATERIAL);
+//glEnable(GL_COLOR_MATERIAL);
+
 //    glTranslated(objPos[0], objPos[1], objPos[2]);
 //    glRotated(theta[1], 0.0, 1.0, 0.0);
 
@@ -135,12 +134,6 @@ void mouse(int btn, int state, int x, int y)
 	{
 		drag = false;
 		ThirdPerson.addXYAng( (x - old_rotateX)/10 );
-//		sAngle += (x - old_rotateX)/10;
-//		std::cout << "new x " << x << std::endl;
-//		std::cout << "sangle change " << x-old_rotateX << std::endl << std::endl;
-
-		rotateX = 0;   //沒有歸零會有 Error
-		rotateY = 0;
 		ThirdPerson.setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -148,7 +141,6 @@ void mouse(int btn, int state, int x, int y)
 		drag = true;
 		old_rotateX = x;
 		old_rotateY = y;
-//		std::cout << "old x " << old_rotateX << std::endl;
 	}
 }
 
@@ -156,15 +148,6 @@ void motion(int x, int y)
 {
 	if(!drag) return;
 	ThirdPerson.setDrag( 1.0*(x - old_rotateX)/10, 1.0*(y - old_rotateY)/10 );
-//	rotateX = (x - old_rotateX)/10;
-//	rotateY = (y - old_rotateY)/10;
-//	std::cout << "rotate x " << rotateX << std::endl;
-
-//	rad = (double) (PI*sAngle/180.0);
-//    sAt[0] = (double)(sEye[0] + 100*cos(rad));
-//    sAt[2] = (double)(sEye[2] + 100*sin(rad));
-//    sAt[1] = sEye[1];
-    //ThirdPerson.addXYAng(rotateX);
     ThirdPerson.updateLookAt();
 
 	glutPostRedisplay();
@@ -183,7 +166,7 @@ void keyboard(unsigned char key, int x, int y)
         objind += 1;
         objind %= 30;
         myObj = objarray[objind];
-        glmUnitize(myObj);
+//        glmUnitize(myObj);
         break;
 
     case '+':
@@ -217,48 +200,34 @@ void keyboard(unsigned char key, int x, int y)
     // 前進, 後退指令
     case 'W':
     case 'w':
-        rad = (double) (PI*sAngle/180.0);
-        sEye[0] += (double) cos(rad)*speed;
-        sEye[2] += (double) sin(rad)*speed;
+        ThirdPerson.goFront();
         break;
 
     case 'S':
     case 's':
-        rad = (double) (PI*sAngle/180.0);
-        sEye[0] -= (double) cos(rad)*speed;
-        sEye[2] -= (double) sin(rad)*speed;
+        ThirdPerson.goBack();
         break;
 
     // 左移, 右移指令
     case 'Q':
     case 'q':
-        rad = (double) (PI*sAngle/180.0);
-        sEye[0] += (double) cos(90-rad)*speed;
-        sEye[2] -= (double) sin(90-rad)*speed;
+        ThirdPerson.goLeft();
         break;
 
     case 'E':
     case 'e':
-        rad = (double) (PI*sAngle/180.0);
-        sEye[0] -= (double) cos(90-rad)*speed;
-        sEye[2] += (double) sin(90-rad)*speed;
+        ThirdPerson.goRight();
         break;
 
     // 旋轉指令
     case 'A':
     case 'a':
         ThirdPerson.addXYAng( -5.0 );
-//        sAngle -= 5.0;
-//        if(sAngle > 360.0) sAngle -= 360.0;
-//        if(sAngle < -360.0) sAngle += 360.0;
         break;
 
     case 'D':
     case 'd':
         ThirdPerson.addXYAng( +5.0);
-//        sAngle += 5.0;
-//        if(sAngle > 360.0) sAngle -= 360.0;
-//        if(sAngle < -360.0) sAngle += 360.0;
         break;
 
     // Zoom 指令

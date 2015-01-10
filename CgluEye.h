@@ -14,7 +14,7 @@ public:
     static const double PI = 3.1415926;
     CgluEye();
 //    CgluEye(float, float, float, float, float, float);
-    CgluEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
+    CgluEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat XZ=-90.0);
     virtual ~CgluEye();
 
     GLfloat & eye(int ind) { return sEye[ind]; }
@@ -22,12 +22,16 @@ public:
     GLfloat & nor(int ind) { return sNor[ind]; }
 
     void setEye(GLfloat s[]);
-    void setEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
+    void setEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat XZ=-90.0);
     void setNor(GLfloat n[]);
     void setNor(GLfloat, GLfloat, GLfloat);
     void setXYAng(GLfloat ang) { xzAng = ang; adjust(); }
     void setDrag(GLfloat x, GLfloat y) { dragX=x; dragY=y; }
     void addXYAng(GLfloat ang) { xzAng += ang; adjust(); }
+    void goFront();
+    void goBack();
+    void goLeft();
+    void goRight();
     void updateLookAt();
     void LookAt();
 
@@ -38,6 +42,7 @@ private:
     GLfloat sNor[3];
     GLfloat xzAng, yAng;
     double dragX, dragY;
+    double walkSpeed;
     void adjust();
 };
 
