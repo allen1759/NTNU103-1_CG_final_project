@@ -17,11 +17,15 @@ public:
 
     void setEye(GLfloat s[]);
     void setEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
+    void setNor(GLfloat n[]);
+    void setNor(GLfloat, GLfloat, GLfloat);
+    void LookAt();
 
 protected:
 private:
     GLfloat sEye[3] = {0.0, 0.0, 4.0};
     GLfloat sAt[3] = {0.0, 0.0, 0.0};
+    GLfloat sNor[3] = {0.0, 1.0, 0.0};
 };
 
 #endif // CGLUEYE_H
