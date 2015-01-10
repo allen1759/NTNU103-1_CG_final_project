@@ -12,7 +12,6 @@
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
-#include "CgluEye.h"
 using namespace std;
 
 GLMmodel *myObj = NULL;
@@ -40,52 +39,6 @@ void updateSeeAt(void)
 
 void drawOBJ()
 {
-/*
-     int i, v;
-
-     if (! myObj) return;
-
-     for (i=0; i<myObj->numtriangles; i++) {
-
-     glColor3ub( ((int)&myObj->triangles[i])%255,((int)&myObj->triangles[i])%128+64, ((int)&myObj->triangles[i])%64*2);
-
-//	  The current triangle is: myObj->triangles[i]
-     glBegin(GL_TRIANGLES);
-        for (v=0; v<3; v++) {
-//             Process the vertices.
-//             Assume that the 3 vertices are P[n0], P[n1], P[n2],
-//             P[] is equivalent to myObj->vertices, and n0,n1,n2 is related to myObj->triangles[i].vindices[0,1,2]
-//		     glColor3fv(colors[a]);
-//             glNormal3fv(normals[a]);
-            glNormal3fv( & myObj->normals[ myObj->triangles[i].nindices[v]*3 ] );
-//		    glColor3fv( & myObj->vertices[ myObj->triangles[i].vindices[v]*3 ] );
-		    glVertex3fv( & myObj->vertices[ myObj->triangles[i].vindices[v]*3 ] );
-        }
-	 glEnd();
-     }
-*/
-
-
-//
-//    GLMgroup *group = NULL;
-//    GLMmaterial *material = NULL;
-//     float * p;
-//     group = myObj->groups;
-//     for(int g=0; g<myObj->numgroups; ++g) {
-//        material = &myObj->materials[ group->material ];
-//
-//        for(int i=0; i<group->numtriangles; ++i) {
-//            glBegin(GL_TRIANGLES);
-//            for(v=0; v<3; ++v) {
-//                p = &myObj->vertices[ myObj->triangles[ group->triangles[i] ].vindices[v]*3 ];
-//                glColor3fv( material->diffuse);
-//                glVertex3fv( p );
-//            }
-//            glEnd();
-//        }
-//        group = group->next;
-//     }
-
     if (!myObj) return;
 cout << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
@@ -112,7 +65,8 @@ void display(void)
 {
 /* display callback, clear frame buffer and z buffer,
    rotate cube and draw, swap buffers */
-   updateSeeAt();
+//   updateSeeAt();
+   ThirdPerson.updateLookAt(sAngle, rotateX);
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	setProjectionMatrix(1, 1);
@@ -131,8 +85,9 @@ void display(void)
     glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, &spotLightTheta);
 
 
-    gluLookAt(sEye[0], sEye[1], sEye[2],
-              sAt[0], sAt[1], sAt[2], 0.0, 1.0, 0.0);
+    ThirdPerson.LookAt();
+//    gluLookAt(sEye[0], sEye[1], sEye[2],
+//              sAt[0], sAt[1], sAt[2], 0.0, 1.0, 0.0);
 
 glEnable(GL_COLOR_MATERIAL);
 //    glTranslated(objPos[0], objPos[1], objPos[2]);
@@ -206,7 +161,8 @@ void motion(int x, int y)
 //    sAt[0] = (double)(sEye[0] + 100*cos(rad));
 //    sAt[2] = (double)(sEye[2] + 100*sin(rad));
 //    sAt[1] = sEye[1];
-    updateSeeAt();
+    //updateSeeAt();
+    ThirdPerson.updateLookAt(sAngle, rotateX);
 
 	glutPostRedisplay();
 }
@@ -313,7 +269,8 @@ void keyboard(unsigned char key, int x, int y)
         zoomFactor -= 0.05;
         break;
     }
-    updateSeeAt();
+    //updateSeeAt();
+    ThirdPerson.updateLookAt(sAngle, rotateX);
 
     glutPostRedisplay();
 }
@@ -476,6 +433,7 @@ int main(int argc, char **argv)
         objarray[i] = glmReadOBJ(filename);
     }
     myObj = objarray[0];
+    ThirdPerson.setEye(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
 
     glmUnitize(myObj);
 

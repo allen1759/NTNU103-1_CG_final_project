@@ -1,15 +1,17 @@
 #include "CgluEye.h"
+#include <cmath>
 using namespace std;
 
 CgluEye::CgluEye()
 {
-    //ctor
+    sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
 }
 
 CgluEye::CgluEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat a1, GLfloat a2, GLfloat a3)
 {
     sEye[0] = s1; sEye[1] = s2; sEye[2] = s3;
     sAt[0]  = a1; sAt[1]  = a2; sAt[2]  = a3;
+    sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
 }
 
 CgluEye::~CgluEye()
@@ -38,9 +40,17 @@ void CgluEye::setNor(GLfloat n1, GLfloat n2, GLfloat n3)
     setNor( tmp );
 }
 
+void CgluEye::updateLookAt(GLfloat xyAng, double dragX)
+{
+	double rad = (double) (PI*(xyAng+dragX)/180.0);
+    sAt[0] = (double)(sEye[0] + 10*cos(rad));
+    sAt[2] = (double)(sEye[2] + 10*sin(rad));
+    sAt[1] = sEye[1];
+}
+
 void CgluEye::LookAt()
 {
     gluLookAt(sEye[0], sEye[1], sEye[2],
-              sAt[0], sAt[1], sAt[2],
-              0.0, 1.0, 0.0);
+              sAt[0],  sAt[1],  sAt[2],
+              sNor[0], sNor[1], sNor[2]);
 }

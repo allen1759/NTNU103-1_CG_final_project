@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include "CgluEye.h"
 
 const double PI = (3.1415926535);
 
@@ -16,6 +17,8 @@ GLfloat light0_dir[]={-3.0, 0.0, 0.0, -0.5};
 int light_theta = 0;
 
 // for look at
+//CgluEye ThirdPerson(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
+CgluEye ThirdPerson;
 //static GLfloat sEye[3] = {0.0, -2.0, 0.0};
 static GLfloat sEye[3] = {0.0, 0.0, 4.0};
 static GLfloat sAt[3] = {0.0, 0.0, 0.0};

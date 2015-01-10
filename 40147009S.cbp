@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="glew32s" />
@@ -29,6 +30,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -38,6 +40,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="CgluEye.cpp" />
+		<Unit filename="CgluEye.h" />
+		<Unit filename="GlobalVariable.h" />
 		<Unit filename="TGALoader.cpp" />
 		<Unit filename="TGALoader.h" />
 		<Unit filename="glm.cpp" />
