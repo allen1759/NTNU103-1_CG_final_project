@@ -184,7 +184,7 @@ void mouse(int btn, int state, int x, int y)
     if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
 		drag = false;
-		ThirdPerson.addXYAng( (x - old_rotateX)/10 );
+		ThirdPerson.addXZAng( (x - old_rotateX)/10 );
 		ThirdPerson.setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -273,12 +273,12 @@ void keyboard(unsigned char key, int x, int y)
     // 旋轉指令
     case 'A':
     case 'a':
-        ThirdPerson.addXYAng( -5.0 );
+        ThirdPerson.addXZAng( -5.0 );
         break;
 
     case 'D':
     case 'd':
-        ThirdPerson.addXYAng( +5.0);
+        ThirdPerson.addXZAng( +5.0);
         break;
 
     // Zoom 指令

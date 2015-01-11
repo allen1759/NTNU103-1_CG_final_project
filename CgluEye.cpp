@@ -98,4 +98,6 @@ void CgluEye::adjust()
 {
     if(xzAng > 360.0) xzAng -= 360.0;
     if(xzAng < -360.0) xzAng += 360.0;
+    if(xzAng > 360.0) yAng -= 360.0;
+    if(xzAng < -360.0) yAng += 360.0;
 }

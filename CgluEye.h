@@ -25,9 +25,10 @@ public:
     void setEye(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat XZ=-90.0);
     void setNor(GLfloat n[]);
     void setNor(GLfloat, GLfloat, GLfloat);
-    void setXYAng(GLfloat ang) { xzAng = ang; adjust(); }
+    void setXZAng(GLfloat ang) { xzAng = ang; adjust(); }
     void setDrag(GLfloat x, GLfloat y) { dragX=x; dragY=y; }
-    void addXYAng(GLfloat ang) { xzAng += ang; adjust(); }
+    void addXZAng(GLfloat ang) { xzAng += ang; adjust(); }
+    void addYAng(GLfloat ang) { yAng += ang; adjust(); }
     void goFront();
     void goBack();
     void goLeft();
