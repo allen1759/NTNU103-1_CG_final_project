@@ -9,7 +9,7 @@ CgluEye::CgluEye()
     xzAng = -90.0;
     walkSpeed = 0.08;
     dragSpeed = 10.0;
-    lookDist = 1.0;
+    lookDist = 0.0001;
     drag_ = false;
 }
 
@@ -21,7 +21,7 @@ CgluEye::CgluEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat a1, GLfloat a2, GLf
     xzAng = XZ;
     walkSpeed = 0.02;
     dragSpeed = 10.0;
-    lookDist = 1.0;
+    lookDist = 0.0001;
     drag_ = false;
     updateLookAt();
 }

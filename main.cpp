@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     taxi.Unitize();
     taxi.SetScale(0.2);
 
-    ThirdPerson.setEye(0.0, 0.5, 2.0, 0.0, 0.0, 0.0);
+    ThirdPerson.setEye(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     setShaders();
     glutMainLoop();
@@ -91,7 +91,7 @@ void setProjectionMatrix (int width, int height)
     if(width+height!=0) rate = 1.0*width/height;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (40.0*zoomFactor, rate, 1, 50);
+    gluPerspective (40.0*zoomFactor, rate, 0.01, 50);
                                    /* 'zNear' 'zFar' */
 }
 
@@ -202,6 +202,11 @@ void keyboard(unsigned char key, int x, int y)
         benIndex %= 30;
 //        currentBen = &benObjs[benIndex];
         break;
+    case '[':
+        ThirdPerson.speedUP(+0.01);
+        break;
+    case ']':
+        ThirdPerson.speedUP(-0.01);
 
     case '+':
         light_theta += 5;

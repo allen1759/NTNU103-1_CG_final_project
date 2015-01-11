@@ -6,6 +6,7 @@
 
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <iostream>
 #include <vector>
 
 class CgluEye
@@ -33,6 +34,8 @@ public:
     void addYAng(GLfloat ang) { yAng += ang; adjust(); }
     void setISDrag(bool bo) { drag_ = bo; }
     bool isDrag() { return drag_; }
+    void speedUP( double x ) { walkSpeed += x; std::cout << "Current speed : " << walkSpeed << std::endl; }
+
     void goFront();
     void goBack();
     void goLeft();
