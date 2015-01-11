@@ -12,7 +12,6 @@
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
-#include "myFunction.h"
 using namespace std;
 
 void setProjectionMatrix (int width, int height);
@@ -59,6 +58,7 @@ int main(int argc, char **argv)
 //    myObj = glmReadOBJ("Car_02_Obj.obj");
 //    myObj = glmReadOBJ("object/ben/ben_00.obj");
     string name ("object/ben/ben_");
+    benObjs.resize(30);
     for(int i=0; i<1; i+=1) {
 //    for(int i=0; i<30; i+=1) {
         stringstream ss;
@@ -69,12 +69,15 @@ int main(int argc, char **argv)
         cout << "open the file : "<< ss.str() << endl;
         char filename[100];
         strcpy(filename, ss.str().c_str());
-        objarray[i] = glmReadOBJ(filename);
+        benObjs[i].ReadOBJ(filename);
+        //objarray[i] = glmReadOBJ(filename);
     }
-    myObj = objarray[0];
+    //myObj = objarray[0];
+    currentBen = &benObjs[0];
     ThirdPerson.setEye(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
 
-    glmUnitize(myObj);
+    //glmUnitize(myObj);
+    currentBen->Unitize();
 
     setShaders();
     glutMainLoop();
@@ -91,6 +94,7 @@ void setProjectionMatrix (int width, int height)
 
 void drawOBJ()
 {
+    /*
     if (!myObj) return;
 //cout << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
@@ -110,7 +114,8 @@ void drawOBJ()
                 }
             glEnd();
         }
-    }
+    }*/
+    currentBen->DrawOBJ();
 }
 
 void display(void)
@@ -183,23 +188,27 @@ void mouse(int btn, int state, int x, int y)
 
     if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
-		drag = false;
-		ThirdPerson.addXZAng( (x - old_rotateX)/10 );
-		ThirdPerson.addYAng(  (y - old_rotateY)/10 );
+//		drag = false;
+		ThirdPerson.setISDrag(false);
+		ThirdPerson.dragXY(x, y);
+//		ThirdPerson.addXZAng( -(x - old_rotateX)/10 );
+//		ThirdPerson.addYAng(  (y - old_rotateY)/10 );
 		ThirdPerson.setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		drag = true;
-		old_rotateX = x;
-		old_rotateY = y;
+	    ThirdPerson.setISDrag(true);
+//		drag = true;
+		ThirdPerson.setOldDrag(x, y);
+//		old_rotateX = x;
+//		old_rotateY = y;
 	}
 }
 
 void motion(int x, int y)
 {
-	if(!drag) return;
-	ThirdPerson.setDrag( 1.0*(x - old_rotateX)/10, 1.0*(y - old_rotateY)/10 );
+	if(!ThirdPerson.isDrag()) return;
+	ThirdPerson.setMotionDrag(x, y);
     ThirdPerson.updateLookAt();
 
 	glutPostRedisplay();
@@ -215,9 +224,10 @@ void keyboard(unsigned char key, int x, int y)
 
     case 'p':
     case 'P':
-        objind += 1;
-        objind %= 30;
-        myObj = objarray[objind];
+        benIndex += 1;
+        benIndex %= 30;
+        //myObj = objarray[objind];
+        currentBen = &benObjs[benIndex];
 //        glmUnitize(myObj);
         break;
 

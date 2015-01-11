@@ -3,14 +3,18 @@
 
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "CgluEye.h"
+#include <vector>
 #include "glm.h"
+#include "CgluEye.h"
+#include "CMyObject.h"
 
 static const double PI = (3.1415926535);
 
+CMyObject * currentBen = NULL;
+std::vector<CMyObject> benObjs;
 static GLMmodel *myObj = NULL;
 static GLMmodel * objarray[30];
-static int objind = 0;
+static int benIndex = 0;
 
 static GLfloat diffuse0[]={1.0, 1.0, 1.0, 1.0};
 static GLfloat ambient0[]={1.0, 1.0, 1.0, 1.0};
