@@ -37,6 +37,8 @@ public:
     void goBack();
     void goLeft();
     void goRight();
+    void goFloorUp();
+    void goFloorDown();
     void dragXY(int x, int y);
     void updateLookAt();
     void LookAt();

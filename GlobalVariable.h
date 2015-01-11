@@ -10,6 +10,8 @@
 
 static const double PI = (3.1415926535);
 
+CMyObject testOBJ;
+
 CMyObject * currentBen = NULL;
 std::vector<CMyObject> benObjs;
 static GLMmodel *myObj = NULL;
@@ -34,7 +36,7 @@ static CgluEye ThirdPerson;
 //static GLfloat sAngle = -90.0;
 ////static GLdouble objPos[3] = {0.0, 0.0, 0.0};
 //static double speed = 0.02;         //所有移動的速度 不含旋轉
-static double zoomFactor = 1.0;
+static double zoomFactor = 0.5;
 //double rad;
 
 // for spin cube

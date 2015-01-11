@@ -53,31 +53,34 @@ int main(int argc, char **argv)
 //    glEnable(GL_TEXTURE_2D);
 //    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
 
-//    myObj = glmReadOBJ("sponza.obj");
-//    myObj = glmReadOBJ("ben_00.obj");
-//    myObj = glmReadOBJ("Car_02_Obj.obj");
-//    myObj = glmReadOBJ("object/ben/ben_00.obj");
-    string name ("object/ben/ben_");
-    benObjs.resize(30);
-    for(int i=0; i<1; i+=1) {
-//    for(int i=0; i<30; i+=1) {
-        stringstream ss;
-        ss << name;
-        if(i<10) ss << "0";
-        ss << i;
-        ss << ".obj";
-        cout << "open the file : "<< ss.str() << endl;
-        char filename[100];
-        strcpy(filename, ss.str().c_str());
-        benObjs[i].ReadOBJ(filename);
-        //objarray[i] = glmReadOBJ(filename);
-    }
-    //myObj = objarray[0];
-    currentBen = &benObjs[0];
-    ThirdPerson.setEye(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
+
+//    string name ("object/ben/ben_");
+//    benObjs.resize(30);
+//    for(int i=0; i<1; i+=1) {
+////    for(int i=0; i<30; i+=1) {
+//        stringstream ss;
+//        ss << name;
+//        if(i<10) ss << "0";
+//        ss << i;
+//        ss << ".obj";
+//        cout << "open the file : "<< ss.str() << endl;
+//        char filename[100];
+//        strcpy(filename, ss.str().c_str());
+//        benObjs[i].ReadOBJ(filename);
+//        //benObjs[i].Unitize();
+//    }
+//    currentBen = &benObjs[0];
+//    testOBJ.ReadOBJ("object/Street/Street_environment_V01.obj");
+//    testOBJ.Unitize();
+    //currentBen = & testOBJ;
+    testOBJ.ReadOBJ("object/car/Car_02_Obj.obj");
+    testOBJ.Unitize();
+    currentBen = &testOBJ;
+
+    ThirdPerson.setEye(0.0, 0.5, 2.0, 0.0, 0.0, 0.0);
 
     //glmUnitize(myObj);
-    currentBen->Unitize();
+    //currentBen->Unitize();
 
     setShaders();
     glutMainLoop();
@@ -86,35 +89,17 @@ int main(int argc, char **argv)
 
 void setProjectionMatrix (int width, int height)
 {
+    static float rate;
+    if(width+height!=0) rate = 1.0*width/height;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (40.0*zoomFactor, (double)width/height, 1, 12);
-                                                   /* 'zNear' 'zFar' */
+    gluPerspective (40.0*zoomFactor, rate, 1, 50);
+                                   /* 'zNear' 'zFar' */
 }
 
 void drawOBJ()
 {
-    /*
-    if (!myObj) return;
-//cout << myObj->pathname << endl;
-    for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
-//        int tmp = myObj->materials[groups->material].textureID;
-//        cout << "groups->name = " << groups->name << endl;
-//        cout << "id = " << tmp ;
-//        cout << "  material name = " << myObj->materials[groups->material].name << endl;
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, myObj->materials[groups->material].textureID);
-        for(unsigned i=0; i<groups->numtriangles; i+=1) {
-            glBegin(GL_TRIANGLES);
-                for (int j=0; j<3; j+=1)
-                {
-                    glNormal3fv(&myObj->normals[myObj->triangles[groups->triangles[i]].nindices[j]*3]);
-                    glTexCoord2fv(&myObj->texcoords[myObj->triangles[groups->triangles[i]].tindices[j]*2]);
-                    glVertex3fv(&myObj->vertices[myObj->triangles[groups->triangles[i]].vindices[j]*3]);
-                }
-            glEnd();
-        }
-    }*/
+    testOBJ.DrawOBJ();
     currentBen->DrawOBJ();
 }
 
@@ -125,7 +110,7 @@ void display(void)
    ThirdPerson.updateLookAt();
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	setProjectionMatrix(1, 1);
+	//setProjectionMatrix(0, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -260,49 +245,48 @@ void keyboard(unsigned char key, int x, int y)
         break;
 
     // 前進, 後退指令
-    case 'W':
-    case 'w':
+    case 'W': case 'w':
         ThirdPerson.goFront();
         break;
-
-    case 'S':
-    case 's':
+    case 'S': case 's':
         ThirdPerson.goBack();
         break;
 
     // 左移, 右移指令
-    case 'Q':
-    case 'q':
+    case 'Q': case 'q':
         ThirdPerson.goLeft();
         break;
-
-    case 'E':
-    case 'e':
+    case 'E': case 'e':
         ThirdPerson.goRight();
         break;
 
+    // 上移, 下移指令
+    case 'R': case 'r':
+        ThirdPerson.goFloorUp();
+        break;
+    case 'F': case 'f':
+        ThirdPerson.goFloorDown();
+        break;
+
     // 旋轉指令
-    case 'A':
-    case 'a':
+    case 'A': case 'a':
         ThirdPerson.addXZAng( -5.0 );
         break;
 
-    case 'D':
-    case 'd':
+    case 'D': case 'd':
         ThirdPerson.addXZAng( +5.0);
         break;
 
     // Zoom 指令
-    case 'n':
-    case 'N':
+    case 'n': case 'N':
         if(zoomFactor >= 1.9) break;
         zoomFactor += 0.05;
+        setProjectionMatrix(0, 0);
         break;
-
-    case 'm':
-    case 'M':
+    case 'm': case 'M':
         if(zoomFactor <=0.1) break;
         zoomFactor -= 0.05;
+        setProjectionMatrix(0, 0);
         break;
     }
     ThirdPerson.updateLookAt();
@@ -310,17 +294,16 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-void myReshape(int w, int h)
+void myReshape(int windoww, int windowh)
 {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    if (w <= h)
-        glOrtho(-2.0, 2.0, -2.0 * (GLfloat) h / (GLfloat) w,
-            2.0 * (GLfloat) h / (GLfloat) w, -10.0, 10.0);
-    else
-        glOrtho(-2.0 * (GLfloat) w / (GLfloat) h,
-            2.0 * (GLfloat) w / (GLfloat) h, -2.0, 2.0, -10.0, 10.0);
+    glViewport(0, 0, windoww, windowh);
+    setProjectionMatrix(windoww, windowh);
+//    if (w <= h)
+//        glOrtho(-2.0, 2.0, -2.0 * (GLfloat) h / (GLfloat) w,
+//            2.0 * (GLfloat) h / (GLfloat) w, -10.0, 10.0);
+//    else
+//        glOrtho(-2.0 * (GLfloat) w / (GLfloat) h,
+//            2.0 * (GLfloat) w / (GLfloat) h, -2.0, 2.0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
 }
 

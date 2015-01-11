@@ -1,4 +1,6 @@
 #include "CMyObject.h"
+#include <iostream>
+using namespace std;
 
 CMyObject::CMyObject()
 {
@@ -12,7 +14,7 @@ CMyObject::CMyObject(char filename[])
 
 CMyObject::~CMyObject()
 {
-    //dtor
+    glmDelete(myObj);
 }
 
 void CMyObject::DrawOBJ()
@@ -20,7 +22,7 @@ void CMyObject::DrawOBJ()
     if (!myObj) return;
 //cout << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
-//        int tmp = myObj->materials[groups->material].textureID;
+        int tmp = myObj->materials[groups->material].textureID;
 //        cout << "groups->name = " << groups->name << endl;
 //        cout << "id = " << tmp ;
 //        cout << "  material name = " << myObj->materials[groups->material].name << endl;

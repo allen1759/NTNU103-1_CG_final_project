@@ -7,7 +7,7 @@ CgluEye::CgluEye()
 {
     sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
     xzAng = -90.0;
-    walkSpeed = 0.02;
+    walkSpeed = 0.08;
     dragSpeed = 10.0;
     lookDist = 10.0;
     drag_ = false;
@@ -58,7 +58,7 @@ void CgluEye::goFront()
     double radH = (double) (PI*yAng/180.0);
     sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
     sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] += (double) sin(rad)*walkSpeed;
+    sEye[1] += (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goBack()
 {
@@ -66,7 +66,7 @@ void CgluEye::goBack()
     double radH = (double) (PI*yAng/180.0);
     sEye[0] -= (double) cos(rad)*walkSpeed*cos(radH);
     sEye[2] -= (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] -= (double) sin(rad)*walkSpeed;
+    sEye[1] -= (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goLeft()
 {
@@ -74,7 +74,7 @@ void CgluEye::goLeft()
     double radH = (double) (PI*yAng/180.0);
     sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
     sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] += (double) sin(rad)*walkSpeed;
+    sEye[1] += (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goRight()
 {
@@ -82,7 +82,15 @@ void CgluEye::goRight()
     double radH = (double) (PI*yAng/180.0);
     sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
     sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] += (double) sin(rad)*walkSpeed;
+    sEye[1] += (double) sin(radH)*walkSpeed;
+}
+void CgluEye::goFloorUp()
+{
+    sEye[1] += (double) walkSpeed;
+}
+void CgluEye::goFloorDown()
+{
+    sEye[1] -= (double) walkSpeed;
 }
 void CgluEye::dragXY(int x, int y)
 {
@@ -97,7 +105,8 @@ void CgluEye::updateLookAt()
     sAt[0] = (double)(sEye[0] + lookDist*cos(rad)*cos(radH));
     sAt[2] = (double)(sEye[2] + lookDist*sin(rad)*cos(radH));
     sAt[1] = (double)(sEye[1] + lookDist*sin(radH));
-    cout << "xzAng = " << xzAng << endl;
+    cout << "yAng = " << yAng << endl;
+    cout << sEye[1] << endl;
 }
 
 void CgluEye::LookAt()
