@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <cstring>
+//#include <cstring>
 #include <string>
 #include <sstream>
 #include "GlobalVariable.h"
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
 
-	glClearColor( 0.0f, 0.8f, 1.0f, 0.0f );
+	glClearColor( 0.8f, 0.8f, 1.0f, 0.0f );
     glewInit();
 
 //    glDisable(GL_TEXTURE_2D);
@@ -74,14 +74,11 @@ int main(int argc, char **argv)
     architecture.ReadOBJ("object/Street/Street_environment_V01.obj");
     architecture.Unitize();
 
-    testOBJ.ReadOBJ("object/car/Car_02_Obj.obj");
-    testOBJ.Unitize();
-    currentBen = &testOBJ;
+    taxi.ReadOBJ("object/car/Car_02_Obj.obj");
+    taxi.Unitize();
+    taxi.SetScale(0.2);
 
     ThirdPerson.setEye(0.0, 0.5, 2.0, 0.0, 0.0, 0.0);
-
-    //glmUnitize(myObj);
-    //currentBen->Unitize();
 
     setShaders();
     glutMainLoop();
@@ -100,9 +97,9 @@ void setProjectionMatrix (int width, int height)
 
 void drawOBJ()
 {
-    testOBJ.DrawOBJ();
+    taxi.DrawOBJ();
     architecture.DrawOBJ();
-    currentBen->DrawOBJ();
+    //currentBen->DrawOBJ();
 }
 
 void display(void)
@@ -127,31 +124,20 @@ void display(void)
     GLfloat spotLightTheta = 40.0;
     glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, &spotLightTheta);
 
-
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     ThirdPerson.LookAt();
+
 
 //glEnable(GL_COLOR_MATERIAL);
 
-//    glTranslated(objPos[0], objPos[1], objPos[2]);
-//    glRotated(theta[1], 0.0, 1.0, 0.0);
+    drawOBJ();
 
-//    glTranslatef(lookAt[0][0], lookAt[0][1], lookAt[0][2]);
-//    glRotatef(theta[1], 0.0, 1.0, 0.0);
-//    glTranslatef(-lookAt[0][0], -lookAt[0][1], -lookAt[0][2]);
-
-//	glRotatef(theta[0], 1.0, 0.0, 0.0);
-//	glRotatef(theta[1], 0.0, 1.0, 0.0);
-//	glRotatef(theta[2], 0.0, 0.0, 1.0);
-
-//	glTranslated(-objPos[0], -objPos[1], -objPos[2]);
-
-
- drawOBJ();
 
 //                setShaders();
 
- glFlush();
- glutSwapBuffers();
+  glFlush();
+  glutSwapBuffers();
 }
 
 void spinCube()
@@ -206,6 +192,7 @@ void keyboard(unsigned char key, int x, int y)
     switch (key)
     {
     case 0x1B:      // ESC key ASCII code
+        cout << "hollow" << endl;
         exit(0);
         break;
 

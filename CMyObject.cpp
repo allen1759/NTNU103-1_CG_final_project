@@ -14,11 +14,15 @@ CMyObject::CMyObject(char filename[])
 
 CMyObject::~CMyObject()
 {
-    glmDelete(myObj);
+    if(myObj) glmDelete(myObj);
 }
 
 void CMyObject::DrawOBJ()
 {
+    glPushMatrix();
+
+    position.Transformation();
+
     if (!myObj) return;
 //cout << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
@@ -39,4 +43,6 @@ void CMyObject::DrawOBJ()
             glEnd();
         }
     }
+
+    glPopMatrix();
 }
