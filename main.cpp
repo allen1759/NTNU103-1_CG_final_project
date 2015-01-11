@@ -12,14 +12,74 @@
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
+#include "myFunction.h"
 using namespace std;
 
-GLMmodel *myObj = NULL;
-GLMmodel * objarray[30];
-int objind = 0;
-
+void setProjectionMatrix (int width, int height);
+void drawOBJ();
+void display(void);
+void spinCube();
+void mouse(int btn, int state, int x, int y);
+void motion(int x, int y);
+void keyboard(unsigned char key, int x, int y);
+void myReshape(int w, int h);
+#define printOpenGLError() printOglError(__FILE__, __LINE__)
+int printOglError(char *file, int line);
+void printInfoLog(GLhandleARB obj);
 void setShaders();
 
+
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+
+/* need both double buffering and z buffer */
+
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(500, 500);
+    glutCreateWindow("Final Project");
+    glutReshapeFunc(myReshape);
+    glutDisplayFunc(display);
+    glutIdleFunc(spinCube);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
+    glutKeyboardFunc(keyboard);
+    glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
+
+	glClearColor( 0.0f, 0.8f, 1.0f, 0.0f );
+    glewInit();
+
+//    glDisable(GL_TEXTURE_2D);
+//    glmDraw(MODEL,GLM_SMOOTH|GLM_MATERIAL);
+//    glEnable(GL_TEXTURE_2D);
+//    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
+
+//    myObj = glmReadOBJ("sponza.obj");
+//    myObj = glmReadOBJ("ben_00.obj");
+//    myObj = glmReadOBJ("Car_02_Obj.obj");
+//    myObj = glmReadOBJ("object/ben/ben_00.obj");
+    string name ("object/ben/ben_");
+    for(int i=0; i<1; i+=1) {
+//    for(int i=0; i<30; i+=1) {
+        stringstream ss;
+        ss << name;
+        if(i<10) ss << "0";
+        ss << i;
+        ss << ".obj";
+        cout << "open the file : "<< ss.str() << endl;
+        char filename[100];
+        strcpy(filename, ss.str().c_str());
+        objarray[i] = glmReadOBJ(filename);
+    }
+    myObj = objarray[0];
+    ThirdPerson.setEye(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
+
+    glmUnitize(myObj);
+
+    setShaders();
+    glutMainLoop();
+    return 0;
+}
 
 void setProjectionMatrix (int width, int height)
 {
@@ -27,14 +87,6 @@ void setProjectionMatrix (int width, int height)
     glLoadIdentity();
     gluPerspective (40.0*zoomFactor, (double)width/height, 1, 12);
                                                    /* 'zNear' 'zFar' */
-}
-
-void updateSeeAt(void)
-{
-	rad = (double) (PI*(sAngle+rotateX)/180.0);
-    sAt[0] = (double)(sEye[0] + 10*cos(rad));
-    sAt[2] = (double)(sEye[2] + 10*sin(rad));
-    sAt[1] = sEye[1];
 }
 
 void drawOBJ()
@@ -65,7 +117,6 @@ void display(void)
 {
 /* display callback, clear frame buffer and z buffer,
    rotate cube and draw, swap buffers */
-//   updateSeeAt();
    ThirdPerson.updateLookAt();
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -243,7 +294,6 @@ void keyboard(unsigned char key, int x, int y)
         zoomFactor -= 0.05;
         break;
     }
-    //updateSeeAt();
     ThirdPerson.updateLookAt();
 
     glutPostRedisplay();
@@ -263,8 +313,6 @@ void myReshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-#define printOpenGLError() printOglError(__FILE__, __LINE__)
-
 int printOglError(char *file, int line)
 {
     //
@@ -282,7 +330,6 @@ int printOglError(char *file, int line)
     }
     return retCode;
 }
-
 
 void printInfoLog(GLhandleARB obj)
 {
@@ -302,7 +349,8 @@ void printInfoLog(GLhandleARB obj)
     }
 }
 
-void setShaders() {
+void setShaders()
+{
 	static int inited = 0;
 	static GLhandleARB v,f,f2,p;
 	char *vs = NULL,*fs = NULL;
@@ -362,59 +410,5 @@ void setShaders() {
     glUniform4fARB(glGetUniformLocationARB(p, "l_diffuse"), 1.0, 1.0, 1.0, 1.0 );
     glUniform4fARB(glGetUniformLocationARB(p, "l_specular"), 1.0, 1.0, 1.0, 1.0 );
 }
-
-
-int main(int argc, char **argv)
-{
-    glutInit(&argc, argv);
-
-/* need both double buffering and z buffer */
-
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(500, 500);
-    glutCreateWindow("Final Project");
-    glutReshapeFunc(myReshape);
-    glutDisplayFunc(display);
-    glutIdleFunc(spinCube);
-    glutMouseFunc(mouse);
-    glutMotionFunc(motion);
-    glutKeyboardFunc(keyboard);
-    glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
-
-	glClearColor( 0.0f, 0.8f, 1.0f, 0.0f );
-    glewInit();
-
-//    glDisable(GL_TEXTURE_2D);
-//    glmDraw(MODEL,GLM_SMOOTH|GLM_MATERIAL);
-//    glEnable(GL_TEXTURE_2D);
-//    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
-
-//    myObj = glmReadOBJ("sponza.obj");
-//    myObj = glmReadOBJ("ben_00.obj");
-//    myObj = glmReadOBJ("Car_02_Obj.obj");
-//    myObj = glmReadOBJ("object/ben/ben_00.obj");
-    string name ("object/ben/ben_");
-    for(int i=0; i<1; i+=1) {
-//    for(int i=0; i<30; i+=1) {
-        stringstream ss;
-        ss << name;
-        if(i<10) ss << "0";
-        ss << i;
-        ss << ".obj";
-        cout << "open the file : "<< ss.str() << endl;
-        char filename[100];
-        strcpy(filename, ss.str().c_str());
-        objarray[i] = glmReadOBJ(filename);
-    }
-    myObj = objarray[0];
-    ThirdPerson.setEye(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
-
-    glmUnitize(myObj);
-
-    setShaders();
-    glutMainLoop();
-    return 0;
-}
-
 
 

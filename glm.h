@@ -11,6 +11,9 @@
 
  */
 
+#ifndef GLM_H_INCLUDED
+#define GLM_H_INCLUDED
+
 //#ifdef __cplusplus
 //extern "C" {
 //#endif // __cplusplus
@@ -284,3 +287,5 @@ glmReadPPM(char* filename, int* width, int* height);
 //#ifdef __cplusplus
 //}
 //#endif // __cplusplus
+
+#endif // GLM_H_INCLUDED

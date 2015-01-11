@@ -17,6 +17,7 @@ CgluEye::CgluEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat a1, GLfloat a2, GLf
     sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
     xzAng = XZ;
     walkSpeed = 0.02;
+    updateLookAt();
 }
 
 CgluEye::~CgluEye()
@@ -59,23 +60,29 @@ void CgluEye::goBack()
 }
 void CgluEye::goLeft()
 {
-    double rad = (double) (PI*(xzAng)/180.0);
-    sEye[0] += (double) sin(rad)*walkSpeed;
-    sEye[2] -= (double) cos(rad)*walkSpeed;
+    double rad = (double) (PI*(xzAng+90.0)/180.0);
+//    sEye[0] += (double) sin(rad)*walkSpeed;
+//    sEye[2] -= (double) cos(rad)*walkSpeed;
+    sEye[0] += (double) cos(rad)*walkSpeed;
+    sEye[2] += (double) sin(rad)*walkSpeed;
 }
 void CgluEye::goRight()
 {
-    double rad = (double) (PI*(90.0-xzAng)/180.0);
-    sEye[0] -= (double) cos(rad)*walkSpeed;
+    double rad = (double) (PI*(xzAng-90.0)/180.0);
+//    sEye[0] -= (double) cos(rad)*walkSpeed;
+//    sEye[2] += (double) sin(rad)*walkSpeed;
+    sEye[0] += (double) cos(rad)*walkSpeed;
     sEye[2] += (double) sin(rad)*walkSpeed;
 }
 
 void CgluEye::updateLookAt()
 {
-	double rad = (double) (PI*(xzAng+dragX)/180.0)+1;
+	double rad = (double) (PI*(xzAng+dragX)/180.0);
     sAt[0] = (double)(sEye[0] + 10*cos(rad));
     sAt[2] = (double)(sEye[2] + 10*sin(rad));
     sAt[1] = sEye[1];
+    cout << "xzAng = " << xzAng << endl;
+    cout << "drag =  " << dragX << endl;
     cout << "see eya = " << sEye[0] << " " << sEye[2] << "      ";
     cout << "see at  = " << sAt[0]  << " " << sAt[2]  << endl;
 }
