@@ -74,7 +74,7 @@ void CgluEye::goLeft()
     double radH = (double) (PI*yAng/180.0);
     sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
     sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] += (double) sin(radH)*walkSpeed;
+    //sEye[1] += (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goRight()
 {
@@ -82,7 +82,7 @@ void CgluEye::goRight()
     double radH = (double) (PI*yAng/180.0);
     sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
     sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] += (double) sin(radH)*walkSpeed;
+    //sEye[1] += (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goFloorUp()
 {

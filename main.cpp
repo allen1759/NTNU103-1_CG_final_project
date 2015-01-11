@@ -70,9 +70,10 @@ int main(int argc, char **argv)
 //        //benObjs[i].Unitize();
 //    }
 //    currentBen = &benObjs[0];
-//    testOBJ.ReadOBJ("object/Street/Street_environment_V01.obj");
-//    testOBJ.Unitize();
     //currentBen = & testOBJ;
+    architecture.ReadOBJ("object/Street/Street_environment_V01.obj");
+    architecture.Unitize();
+
     testOBJ.ReadOBJ("object/car/Car_02_Obj.obj");
     testOBJ.Unitize();
     currentBen = &testOBJ;
@@ -100,6 +101,7 @@ void setProjectionMatrix (int width, int height)
 void drawOBJ()
 {
     testOBJ.DrawOBJ();
+    architecture.DrawOBJ();
     currentBen->DrawOBJ();
 }
 
@@ -211,9 +213,7 @@ void keyboard(unsigned char key, int x, int y)
     case 'P':
         benIndex += 1;
         benIndex %= 30;
-        //myObj = objarray[objind];
-        currentBen = &benObjs[benIndex];
-//        glmUnitize(myObj);
+//        currentBen = &benObjs[benIndex];
         break;
 
     case '+':

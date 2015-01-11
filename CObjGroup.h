@@ -11,11 +11,15 @@ public:
     virtual ~CObjGroup();
 
     void setIndex(int x) { index = x; }
-    CMyObject * getCurrent() { return objs[index]; }
+    CMyObject * getCurrent() { return &objs[index]; }
     CMyObject * getNext()
     {
         index = (index+1)%objs.size();
-        return objs[index];
+        return &objs[index];
+    }
+    void push(CMyObject o)
+    {
+        objs.push_back(o);
     }
 
 protected:

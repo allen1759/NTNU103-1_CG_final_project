@@ -7,13 +7,18 @@
 #include "glm.h"
 #include "CgluEye.h"
 #include "CMyObject.h"
+#include "CObjGroup.h"
 
 static const double PI = (3.1415926535);
 
 CMyObject testOBJ;
 
 CMyObject * currentBen = NULL;
-std::vector<CMyObject> benObjs;
+
+CMyObject architecture;
+CObjGroup benObjs;
+//std::vector<CMyObject> benObjs;
+
 static GLMmodel *myObj = NULL;
 static GLMmodel * objarray[30];
 static int benIndex = 0;
@@ -28,14 +33,8 @@ static GLfloat light0_dir[]={-3.0, 0.0, 0.0, -0.5};
 static int light_theta = 0;
 
 // for look at
-//CgluEye ThirdPerson(0.0, 0.0, 4.0, 0.0, 0.0, 0.0);
-static CgluEye ThirdPerson;
-//static GLfloat sEye[3] = {0.0, -2.0, 0.0};
-//static GLfloat sEye[3] = {0.0, 0.0, 4.0};
-//static GLfloat sAt[3] = {0.0, 0.0, 0.0};
-//static GLfloat sAngle = -90.0;
-////static GLdouble objPos[3] = {0.0, 0.0, 0.0};
-//static double speed = 0.02;         //所有移動的速度 不含旋轉
+CgluEye ThirdPerson;
+
 static double zoomFactor = 0.5;
 //double rad;
 
