@@ -185,6 +185,7 @@ void mouse(int btn, int state, int x, int y)
 	{
 		drag = false;
 		ThirdPerson.addXZAng( (x - old_rotateX)/10 );
+		ThirdPerson.addYAng(  (y - old_rotateY)/10 );
 		ThirdPerson.setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)

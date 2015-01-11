@@ -26,8 +26,9 @@ public:
     void setNor(GLfloat n[]);
     void setNor(GLfloat, GLfloat, GLfloat);
     void setXZAng(GLfloat ang) { xzAng = ang; adjust(); }
-    void setDrag(GLfloat x, GLfloat y) { dragX=x; dragY=y; }
     void addXZAng(GLfloat ang) { xzAng += ang; adjust(); }
+    void setDrag(GLfloat x, GLfloat y) { dragX=x; dragY=y; }
+    void setYAng(GLfloat ang) { yAng = ang; adjust(); }
     void addYAng(GLfloat ang) { yAng += ang; adjust(); }
     void goFront();
     void goBack();
@@ -43,7 +44,7 @@ private:
     GLfloat sNor[3];
     GLfloat xzAng, yAng;
     double dragX, dragY;
-    double walkSpeed;
+    double walkSpeed, lookDist;
     void adjust();
 };
 
