@@ -29,7 +29,7 @@ void keyboardSwitchCase(unsigned char key, int x, int y);
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 int printOglError(char *file, int line);
 void printInfoLog(GLhandleARB obj);
-
+void checkBen();
 
 int main(int argc, char **argv)
 {
@@ -52,23 +52,25 @@ int main(int argc, char **argv)
 	glClearColor( 0.4f, 0.4f, 0.6f, 0.0f );
     glewInit();
 
-
-    string name ("object/ben/ben_");
+    benObjs.setFreq(1);
+    benObjs.resize(30);
+//    for(int i=0; i<3; i+=1) {
     for(int i=0; i<3; i+=1) {
-//    for(int i=0; i<30; i+=1) {
         stringstream ss;
-        ss << name;
+        ss << "object/ben/ben_";
         if(i<10) ss << "0";
         ss << i;
         ss << ".obj";
         cout << "open the file : "<< ss.str() << endl;
         char filename[128];
         strcpy(filename, ss.str().c_str());
-        benObjs.push(testOBJ);
         benObjs[i].ReadOBJ(filename);
         benObjs[i].SetScale(1.2);
         benObjs[i].SetY(-0.3);
         benObjs[i].SetX(1.0);
+        benObjs[i].SetThetaXZ(90.0);
+        benObjs[i].SetThetaFront(90.0);
+        benObjs[i].SetSpeed(0.05);
     }
     currentBen = &benObjs[0];
 
@@ -90,7 +92,8 @@ int main(int argc, char **argv)
     sphere.SetScale(50.0);
 
     ThirdPerson.setEye(0.0, 0.0, 2.0);
-    currentPerson = &TaxiFirstPerson;
+    currentPerson = &ThirdPerson;
+    currentObj = currentBen;
 
     setShaders();
     glutMainLoop();
@@ -127,11 +130,17 @@ void drawOBJ()
         glPopMatrix();
     }
 
-    double updown = (rand()%100-50)/100.0 * 0.01;
-    GLdouble originY = taxi.GetTransY();
-    taxi.SetY( originY + updown );
-    taxi.DrawOBJ();
-    taxi.SetY( originY );
+    if( currentObj == &taxi && controlTaxi ) {
+        double updown = (rand()%100-50)/100.0 * 0.01;
+        GLdouble originY = taxi.GetTransY();
+        taxi.SetY( originY + updown );
+        taxi.DrawOBJ();
+        taxi.SetY( originY );
+    }
+    else {
+        taxi.DrawOBJ();
+    }
+
 
     //currentBen->DrawOBJ();
 }
@@ -155,10 +164,14 @@ void display(void)
     GLfloat spotLightTheta = 40.0;
     glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, &spotLightTheta);
 
-    TaxiFirstPerson.setEye( taxi.GetTransX()-0.10*cos(PI*taxi.GetThetaXZ()/180.0)
+    TaxiFirstPerson.setEye( taxi.GetTransX()-0.05*cos(PI*taxi.GetThetaXZ()/180.0)
                           , taxi.GetTransY()+0.08
-                          , taxi.GetTransZ()-0.10*sin(PI*taxi.GetThetaXZ()/180.0) );
+                          , taxi.GetTransZ()-0.05*sin(PI*taxi.GetThetaXZ()/180.0) );
     TaxiFirstPerson.setXZAng( taxi.GetThetaXZ() );
+
+    BenFirstPerson.setEye( currentBen->GetTransX()-0.10*cos(PI*currentBen->GetThetaXZ()/180.0)
+                          , currentBen->GetTransY()+0.1
+                          , currentBen->GetTransZ()-0.10*sin(PI*currentBen->GetThetaXZ()/180.0) );
 
 
     currentPerson->updateLookAt();
@@ -363,6 +376,8 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
         ThirdPerson.setXZAng( currentPerson->getXZAng() );
         currentPerson = &ThirdPerson;
         break;
+    case '2':
+        currentPerson = &BenFirstPerson; break;
     case '3':
         currentPerson = &TaxiFirstPerson; break;
 
@@ -372,7 +387,12 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
         currentObj = &taxi; break;
 
     case 'p': case 'P':
-        currentBen = benObjs.getNext();
+        if( currentObj == currentBen ) {
+            currentObj = currentBen = benObjs.getNext();
+        }
+        else {
+            currentBen = benObjs.getNext();
+        }
         break;
     case '[':
         currentPerson->speedUP(+0.01);
@@ -380,24 +400,31 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
     case ']':
         currentPerson->speedUP(-0.01);
         break;
+    case 'Z': case 'z':
+        controlTaxi = !controlTaxi;
+        break;
 
     case 'Y': case 'y':
-        taxi.goFront();
+        currentObj->goFront();
+        checkBen();
         break;
     case 'H': case 'h':
-        taxi.goBack();
+        currentObj->goBack();
+        checkBen();
         break;
     case 'T': case 't':
-        taxi.goLeft();
+        currentObj->goLeft();
+        checkBen();
         break;
     case 'U': case 'u':
-        taxi.goRight();
+        currentObj->goRight();
+        checkBen();
         break;
     case 'G': case 'g':
-        taxi.addThetaXZ( -30.0 );
+        currentObj->addThetaXZ( -30.0 );
         break;
     case 'J': case 'j':
-        taxi.addThetaXZ( +30.0 );
+        currentObj->addThetaXZ( +30.0 );
         break;
 
     case '+':
@@ -471,5 +498,14 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
     }
 }
 
-
+void checkBen()
+{
+    if( currentObj == currentBen ) {
+        benObjs.countUp();
+        if( benObjs.isChange() ) {
+            currentBen = benObjs.getNext();
+            currentObj = currentBen;
+        }
+    }
+}
 

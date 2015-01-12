@@ -3,6 +3,7 @@
 CObjGroup::CObjGroup()
 {
     index = 0;
+    currFreq = 0;
     //ctor
 }
 

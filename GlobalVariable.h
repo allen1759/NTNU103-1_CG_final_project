@@ -18,18 +18,20 @@ static CMyObject * currentObj = NULL;
 static CMyObject sphere;
 static CMyObject architecture;
 static CMyObject bridge;
+bool controlTaxi = true;
 static CMyObject taxi;
 static CMyObject * currentBen = NULL;
 static CObjGroup benObjs;
 
-static GLMmodel *myObj = NULL;
-static GLMmodel * objarray[30];
-static int benIndex = 0;
+//static GLMmodel *myObj = NULL;
+//static GLMmodel * objarray[30];
+//static int benIndex = 0;
 
 // for look at
 static CgluEye * currentPerson;
 static CgluEye ThirdPerson;
 static CgluEye TaxiFirstPerson;
+static CgluEye BenFirstPerson;
 
 static double zoomFactor = 0.5;
 
@@ -47,11 +49,11 @@ static GLint axis = 2;
 static int moving = 0;
 
 // for drag function
-static bool drag = false;
-static double rotateX;			//拖曳後的相對座標，決定要旋轉幾度
-static double rotateY;
-static double old_rotateX;     //剛按下滑鼠時的視窗座標
-static double old_rotateY;
+//static bool drag = false;
+//static double rotateX;			//拖曳後的相對座標，決定要旋轉幾度
+//static double rotateY;
+//static double old_rotateX;     //剛按下滑鼠時的視窗座標
+//static double old_rotateY;
 
 // control texture mode
 static int wave_mode = 1;

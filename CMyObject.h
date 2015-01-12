@@ -29,6 +29,10 @@ public:
     void SetThetaXZ(GLdouble the) { position.thetaXZ = the; }
     void SetThetaFront(GLdouble the) { position.thetaFront = the; }
     void SetScale(GLdouble s) { position.scale = s; }
+    void SetSpeed(double s) { walkSpeed = s; }
+
+    const CObjPosition & GetPosition() { return position; }
+    void SetPosition(const CObjPosition & pos) { position = pos; }
 
     void goFront();
     void goBack();
