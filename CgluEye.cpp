@@ -7,6 +7,7 @@ CgluEye::CgluEye()
 {
     sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
     xzAng = -90.0;
+    yAng  = 0.0;
     walkSpeed = 0.08;
     dragSpeed = 10.0;
     lookDist = 0.0001;
@@ -16,7 +17,6 @@ CgluEye::CgluEye()
 CgluEye::CgluEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat XZ, GLfloat Y)
 {
     sEye[0] = s1; sEye[1] = s2; sEye[2] = s3;
-    //sAt[0]  = a1; sAt[1]  = a2; sAt[2]  = a3;
     sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
     xzAng = XZ;
     yAng = Y;
@@ -57,17 +57,21 @@ void CgluEye::goFront()
 {
     double rad = (double) (PI*xzAng/180.0);
     double radH = (double) (PI*yAng/180.0);
-    sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
-    sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] += (double) sin(radH)*walkSpeed;
+    sEye[0] += (double) cos(rad)*walkSpeed;
+    sEye[2] += (double) sin(rad)*walkSpeed;
+//    sEye[0] += (double) cos(rad)*walkSpeed*cos(radH);
+//    sEye[2] += (double) sin(rad)*walkSpeed*cos(radH);
+//    sEye[1] += (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goBack()
 {
     double rad = (double) (PI*xzAng/180.0);
     double radH = (double) (PI*yAng/180.0);
-    sEye[0] -= (double) cos(rad)*walkSpeed*cos(radH);
-    sEye[2] -= (double) sin(rad)*walkSpeed*cos(radH);
-    sEye[1] -= (double) sin(radH)*walkSpeed;
+    sEye[0] -= (double) cos(rad)*walkSpeed;
+    sEye[2] -= (double) sin(rad)*walkSpeed;
+//    sEye[0] -= (double) cos(rad)*walkSpeed*cos(radH);
+//    sEye[2] -= (double) sin(rad)*walkSpeed*cos(radH);
+//    sEye[1] -= (double) sin(radH)*walkSpeed;
 }
 void CgluEye::goLeft()
 {

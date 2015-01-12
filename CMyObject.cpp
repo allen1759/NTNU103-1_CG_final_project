@@ -5,6 +5,7 @@ using namespace std;
 CMyObject::CMyObject()
 {
     myObj = NULL;
+    walkSpeed = 0.08;
 }
 
 CMyObject::CMyObject(char filename[])
@@ -19,12 +20,13 @@ CMyObject::~CMyObject()
 
 void CMyObject::DrawOBJ()
 {
+    if (!myObj) return;
+
     glPushMatrix();
 
     position.Transformation();
 
-    if (!myObj) return;
-//cout << myObj->pathname << endl;
+//cout << "----------------- " << myObj->pathname << endl;
     for (GLMgroup *groups = myObj->groups; groups != NULL; groups = groups->next) {
         int tmp = myObj->materials[groups->material].textureID;
 //        cout << "groups->name = " << groups->name << endl;
@@ -32,6 +34,7 @@ void CMyObject::DrawOBJ()
 //        cout << "  material name = " << myObj->materials[groups->material].name << endl;
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, myObj->materials[groups->material].textureID);
+
         for(unsigned i=0; i<groups->numtriangles; i+=1) {
             glBegin(GL_TRIANGLES);
                 for (int j=0; j<3; j+=1)
@@ -45,4 +48,35 @@ void CMyObject::DrawOBJ()
     }
 
     glPopMatrix();
+}
+
+
+
+void CMyObject::goFront()
+{
+    double rad = (double) (PI*(position.thetaXZ+position.thetaFront)/180.0);
+    position.transX += (double) cos(rad)*walkSpeed;
+    position.transZ += (double) sin(rad)*walkSpeed;
+}
+void CMyObject::goBack()
+{
+    double rad = (double) (PI*(position.thetaXZ+position.thetaFront)/180.0);
+    position.transX -= (double) cos(rad)*walkSpeed;
+    position.transZ -= (double) sin(rad)*walkSpeed;
+}
+void CMyObject::goLeft()
+{
+    double rad = (double) (PI*(position.thetaXZ+position.thetaFront-90.0)/180.0);
+    position.transX += (double) cos(rad)*walkSpeed;
+    position.transZ += (double) sin(rad)*walkSpeed;
+}
+void CMyObject::goRight()
+{
+    double rad = (double) (PI*(position.thetaXZ+position.thetaFront+90.0)/180.0);
+    position.transX += (double) cos(rad)*walkSpeed;
+    position.transZ += (double) sin(rad)*walkSpeed;
+}
+void CMyObject::addThetaXZ(double the)
+{
+    position.thetaXZ += the;
 }

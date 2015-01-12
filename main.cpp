@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
 
-	glClearColor( 0.8f, 0.8f, 1.0f, 0.0f );
+	glClearColor( 0.9f, 0.9f, 0.9f, 0.0f );
     glewInit();
 
 //    glDisable(GL_TEXTURE_2D);
@@ -79,8 +79,15 @@ int main(int argc, char **argv)
     taxi.ReadOBJ("object/car/Car_02_Obj.obj");
     taxi.Unitize();
     taxi.SetScale(0.8);
+    taxi.SetThetaFront(-90.0);
 
-    ThirdPerson.setEye(0.0, 0.0, 0.0);
+
+//    testOBJ.ReadOBJ("object/T-Rex/T-Rex_Model.obj");
+//    testOBJ.ReadOBJ("object/pontez/pontez.obj");
+//    testOBJ.Unitize();
+//    testOBJ.SetY(0.5);
+
+    ThirdPerson.setEye(0.0, 0.0, 2.0);
 
     setShaders();
     glutMainLoop();
@@ -99,8 +106,12 @@ void setProjectionMatrix (int width, int height)
 
 void drawOBJ()
 {
-    taxi.DrawOBJ();
     architecture.DrawOBJ();
+//    glPushMatrix();
+    taxi.DrawOBJ();
+//    glPopMatrix();
+
+//    testOBJ.DrawOBJ();
     //currentBen->DrawOBJ();
 }
 
@@ -111,7 +122,6 @@ void display(void)
    ThirdPerson.updateLookAt();
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//setProjectionMatrix(0, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -129,14 +139,9 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     ThirdPerson.LookAt();
-
-
 //glEnable(GL_COLOR_MATERIAL);
 
     drawOBJ();
-
-
-//                setShaders();
 
   glFlush();
   glutSwapBuffers();
@@ -163,20 +168,14 @@ void mouse(int btn, int state, int x, int y)
 
     if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
-//		drag = false;
 		ThirdPerson.setISDrag(false);
 		ThirdPerson.dragXY(x, y);
-//		ThirdPerson.addXZAng( -(x - old_rotateX)/10 );
-//		ThirdPerson.addYAng(  (y - old_rotateY)/10 );
 		ThirdPerson.setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 	    ThirdPerson.setISDrag(true);
-//		drag = true;
 		ThirdPerson.setOldDrag(x, y);
-//		old_rotateX = x;
-//		old_rotateY = y;
 	}
 }
 
@@ -194,12 +193,10 @@ void keyboard(unsigned char key, int x, int y)
     switch (key)
     {
     case 0x1B:      // ESC key ASCII code
-        cout << "hollow" << endl;
         exit(0);
         break;
 
-    case 'p':
-    case 'P':
+    case 'p': case 'P':
         benIndex += 1;
         benIndex %= 30;
 //        currentBen = &benObjs[benIndex];
@@ -209,6 +206,26 @@ void keyboard(unsigned char key, int x, int y)
         break;
     case ']':
         ThirdPerson.speedUP(-0.01);
+        break;
+
+    case 'Y': case 'y':
+        taxi.goFront();
+        break;
+    case 'H': case 'h':
+        taxi.goBack();
+        break;
+    case 'T': case 't':
+        taxi.goLeft();
+        break;
+    case 'U': case 'u':
+        taxi.goRight();
+        break;
+    case 'G': case 'g':
+        taxi.addThetaXZ( -30.0 );
+        break;
+    case 'J': case 'j':
+        taxi.addThetaXZ( +30.0 );
+        break;
 
     case '+':
         light_theta += 5;
@@ -232,7 +249,7 @@ void keyboard(unsigned char key, int x, int y)
         moving = !moving;
         break;
 
-    case 't': case 'T':
+    case '`':
         wave_mode=!wave_mode;
         setShaders();
         break;
@@ -244,7 +261,6 @@ void keyboard(unsigned char key, int x, int y)
     case 'S': case 's':
         ThirdPerson.goBack();
         break;
-
     // 左移, 右移指令
     case 'Q': case 'q':
         ThirdPerson.goLeft();
@@ -252,7 +268,6 @@ void keyboard(unsigned char key, int x, int y)
     case 'E': case 'e':
         ThirdPerson.goRight();
         break;
-
     // 上移, 下移指令
     case 'R': case 'r':
         ThirdPerson.goFloorUp();

@@ -320,6 +320,7 @@ glmReadMTL(GLMmodel* model, char* name)
         model->materials[i].specular[1] = 0.0;
         model->materials[i].specular[2] = 0.0;
         model->materials[i].specular[3] = 1.0;
+        model->materials[i].hasTexure = false;
     }
     model->materials[0].name = strdup("default");
 
@@ -376,6 +377,7 @@ glmReadMTL(GLMmodel* model, char* name)
                     fgets(buf, sizeof(buf), file);
                     break;
                     fscanf(file, "%s", buf);
+                    model->materials[nummaterials].hasTexure = true;
                     IMAGE texture;
                     texture.LoadTGA(buf);
                     glGenTextures(1, &model->materials[nummaterials].textureID);
@@ -415,8 +417,8 @@ glmReadMTL(GLMmodel* model, char* name)
                         glBindTexture(GL_TEXTURE_2D, model->materials[nummaterials].textureID);
                         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, texture.getWidth(),texture.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, texture.getDataForOpenGL());
                         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-//                        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_BORDER);
-//                        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_BORDER);
+//                        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+//                        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
                         glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
                         glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
                         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);

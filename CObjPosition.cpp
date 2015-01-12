@@ -3,8 +3,8 @@
 CObjPosition::CObjPosition()
 {
     //ctor
-    transX = 0.0; transY = 0.0, transZ = 0.0;
-    thetaXZ = 0.0;
+    transX = 0.0; transY = 0.0; transZ = 0.0;
+    thetaXZ = 0.0; thetaFront = 0.0;
     scale = 1.0;
 }
 

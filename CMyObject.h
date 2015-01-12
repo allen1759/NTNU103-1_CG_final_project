@@ -22,12 +22,22 @@ public:
     void SetX(GLdouble x) { position.transX = x; }
     void SetY(GLdouble y) { position.transY = y; }
     void SetZ(GLdouble z) { position.transZ = z; }
+    void SetThetaXZ(GLdouble the) { position.thetaXZ = the; }
+    void SetThetaFront(GLdouble the) { position.thetaFront = the; }
     void SetScale(GLdouble s) { position.scale = s; }
 
+    void goFront();
+    void goBack();
+    void goLeft();
+    void goRight();
+    void addThetaXZ(double the);
+
+    static const double PI = 3.1415926535;
 protected:
 private:
     GLMmodel *myObj;
     CObjPosition position;
+    double walkSpeed;
 };
 
 #endif // CMYOBJECT_H
