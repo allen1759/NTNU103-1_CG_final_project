@@ -49,13 +49,13 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
 
-	glClearColor( 0.4f, 0.4f, 0.6f, 0.0f );
+	glClearColor( 0.9f, 0.8f, 0.8f, 0.0f );
     glewInit();
 
     benObjs.setFreq(1);
     benObjs.resize(30);
 //    for(int i=0; i<3; i+=1) {
-    for(int i=0; i<3; i+=1) {
+    for(int i=0; i<30; i+=1) {
         stringstream ss;
         ss << "object/ben/ben_";
         if(i<10) ss << "0";
@@ -67,12 +67,13 @@ int main(int argc, char **argv)
         benObjs[i].ReadOBJ(filename);
         benObjs[i].SetScale(1.2);
         benObjs[i].SetY(-0.3);
-        benObjs[i].SetX(1.0);
-        benObjs[i].SetThetaXZ(90.0);
+        benObjs[i].SetX(2.0);
+        benObjs[i].SetZ(4.0);
+        benObjs[i].SetThetaXZ(180.0);
         benObjs[i].SetThetaFront(90.0);
         benObjs[i].SetSpeed(0.05);
     }
-    currentBen = &benObjs[0];
+    currentBen = &benObjs[6];
 
     architecture.ReadOBJ("object/Street/Street_environment_V01.obj");
     architecture.Unitize();
@@ -81,6 +82,7 @@ int main(int argc, char **argv)
 
     taxi.ReadOBJ("object/car/Car_02_Obj.obj");
     taxi.Unitize();
+    taxi.SetX(-2.0);
     taxi.SetScale(0.8);
     taxi.SetThetaFront(-90.0);
 
@@ -89,7 +91,7 @@ int main(int argc, char **argv)
     bridge.SetScale(10.0);
 
     sphere.ReadOBJ("object/sphere/sphere.obj");
-    sphere.SetScale(50.0);
+    sphere.SetScale(45.0);
 
     ThirdPerson.setEye(0.0, 0.0, 2.0);
     currentPerson = &ThirdPerson;
@@ -169,9 +171,10 @@ void display(void)
                           , taxi.GetTransZ()-0.05*sin(PI*taxi.GetThetaXZ()/180.0) );
     TaxiFirstPerson.setXZAng( taxi.GetThetaXZ() );
 
-    BenFirstPerson.setEye( currentBen->GetTransX()-0.10*cos(PI*currentBen->GetThetaXZ()/180.0)
-                          , currentBen->GetTransY()+0.1
-                          , currentBen->GetTransZ()-0.10*sin(PI*currentBen->GetThetaXZ()/180.0) );
+    BenFirstPerson.setEye( currentBen->GetTransX()-0.80*cos(PI*currentBen->GetThetaXZ()/180.0)
+                          , currentBen->GetTransY()+0.8
+                          , currentBen->GetTransZ()-0.80*sin(PI*currentBen->GetThetaXZ()/180.0) );
+    BenFirstPerson.setXZAng( currentBen->GetThetaXZ() );
 
 
     currentPerson->updateLookAt();
