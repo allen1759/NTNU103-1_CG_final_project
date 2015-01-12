@@ -11,6 +11,8 @@ public:
     virtual ~CObjGroup();
 
     void setIndex(int x) { index = x; }
+    CMyObject & operator[]( int i ) { return objs[i]; }
+    const CMyObject & operator[]( int i ) const { return objs[i]; }
     CMyObject * getCurrent() { return &objs[index]; }
     CMyObject * getNext()
     {

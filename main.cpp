@@ -49,32 +49,29 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
 
-	glClearColor( 0.9f, 0.9f, 0.9f, 0.0f );
+	glClearColor( 0.4f, 0.4f, 0.6f, 0.0f );
     glewInit();
 
-//    glDisable(GL_TEXTURE_2D);
-//    glmDraw(MODEL,GLM_SMOOTH|GLM_MATERIAL);
-//    glEnable(GL_TEXTURE_2D);
-//    glMaterialfv(GL_FRONT, GL_SPECULAR,fNoLight);
 
+    string name ("object/ben/ben_");
+    for(int i=0; i<3; i+=1) {
+//    for(int i=0; i<30; i+=1) {
+        stringstream ss;
+        ss << name;
+        if(i<10) ss << "0";
+        ss << i;
+        ss << ".obj";
+        cout << "open the file : "<< ss.str() << endl;
+        char filename[128];
+        strcpy(filename, ss.str().c_str());
+        benObjs.push(testOBJ);
+        benObjs[i].ReadOBJ(filename);
+        benObjs[i].SetScale(1.2);
+        benObjs[i].SetY(-0.3);
+        benObjs[i].SetX(1.0);
+    }
+    currentBen = &benObjs[0];
 
-//    string name ("object/ben/ben_");
-//    benObjs.resize(30);
-//    for(int i=0; i<1; i+=1) {
-////    for(int i=0; i<30; i+=1) {
-//        stringstream ss;
-//        ss << name;
-//        if(i<10) ss << "0";
-//        ss << i;
-//        ss << ".obj";
-//        cout << "open the file : "<< ss.str() << endl;
-//        char filename[100];
-//        strcpy(filename, ss.str().c_str());
-//        benObjs[i].ReadOBJ(filename);
-//        //benObjs[i].Unitize();
-//    }
-//    currentBen = &benObjs[0];
-    //currentBen = & testOBJ;
     architecture.ReadOBJ("object/Street/Street_environment_V01.obj");
     architecture.Unitize();
     architecture.SetScale(10);
@@ -89,13 +86,10 @@ int main(int argc, char **argv)
     bridge.Unitize();
     bridge.SetScale(10.0);
 
-//    testOBJ.ReadOBJ("object/T-Rex/T-Rex_Model.obj");
-//    testOBJ.ReadOBJ("object/pontez/pontez.obj");
-//    testOBJ.Unitize();
-//    testOBJ.SetY(0.5);
+    sphere.ReadOBJ("object/sphere/sphere.obj");
+    sphere.SetScale(50.0);
 
     ThirdPerson.setEye(0.0, 0.0, 2.0);
-
     currentPerson = &TaxiFirstPerson;
 
     setShaders();
@@ -105,44 +99,33 @@ int main(int argc, char **argv)
 
 void drawOBJ()
 {
+    sphere.DrawOBJ();
     architecture.DrawOBJ();
-//    glPushMatrix();
-//      glTranslated(-19.9, 0, 0);
-//      architecture.DrawOBJ();
-//    glPopMatrix();
-//    glPushMatrix();
-//      glTranslated(+19.9, 0, 0);
-//      architecture.DrawOBJ();
-//    glPopMatrix();
-//    glPushMatrix();
-//      glTranslated(0, 0, +19.4);
-//      architecture.DrawOBJ();
-//    glPopMatrix();
-//    glPushMatrix();
-//      glTranslated(0, 0, -19.4);
-//      architecture.DrawOBJ();
-//    glPopMatrix();
-
-//    glPushMatrix();
-//        glTranslated(-17.8, -0.3, 0.2);
-//        glRotated(180, 0, 1, 0);
-//        bridge.DrawOBJ();
-//    glPopMatrix();
-//    glPushMatrix();
-//        glTranslated(+17.8, -0.3, 0.2);
-//        glRotated(-180, 0, 1, 0);
-//        bridge.DrawOBJ();
-//    glPopMatrix();
-    glPushMatrix();
-        glTranslated(-1.0, -0.3, -17.3);
-        glRotated(90, 0, 1, 0);
-        bridge.DrawOBJ();
-    glPopMatrix();
-    glPushMatrix();
-        glTranslated(-1.0, -0.3, +17.3);
-        glRotated(-90, 0, 1, 0);
-        bridge.DrawOBJ();
-    glPopMatrix();
+    if( ControlBen ) {
+        currentBen->DrawOBJ();
+    }
+    else {
+        glPushMatrix();
+            glTranslated(-17.8, -0.3, 0.2);
+            glRotated(180, 0, 1, 0);
+            bridge.DrawOBJ();
+        glPopMatrix();
+        glPushMatrix();
+            glTranslated(+17.8, -0.3, 0.2);
+            glRotated(-180, 0, 1, 0);
+            bridge.DrawOBJ();
+        glPopMatrix();
+        glPushMatrix();
+            glTranslated(-1.0, -0.3, -17.3);
+            glRotated(90, 0, 1, 0);
+            bridge.DrawOBJ();
+        glPopMatrix();
+        glPushMatrix();
+            glTranslated(-1.0, -0.3, +17.3);
+            glRotated(-90, 0, 1, 0);
+            bridge.DrawOBJ();
+        glPopMatrix();
+    }
 
     double updown = (rand()%100-50)/100.0 * 0.01;
     GLdouble originY = taxi.GetTransY();
@@ -157,13 +140,10 @@ void display(void)
 {
 /* display callback, clear frame buffer and z buffer,
    rotate cube and draw, swap buffers */
-//   ThirdPerson.updateLookAt();
-
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
 
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -185,7 +165,6 @@ void display(void)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-//    ThirdPerson.LookAt();
     currentPerson->LookAt();
 //glEnable(GL_COLOR_MATERIAL);
 
@@ -361,7 +340,7 @@ void setProjectionMatrix (int width, int height)
     if(width+height!=0) rate = 1.0*width/height;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (90.0*zoomFactor, rate, 0.01, 50);
+    gluPerspective (120.0*zoomFactor, rate, 0.01, 50);
                                    /* 'zNear' 'zFar' */
 }
 
@@ -371,6 +350,10 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
     {
     case 0x1B:      // ESC key ASCII code
         exit(0);
+        break;
+
+    case '0':
+        ControlBen = !ControlBen;
         break;
 
     case '1':
@@ -383,9 +366,13 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
     case '3':
         currentPerson = &TaxiFirstPerson; break;
 
+    case '6':
+        currentObj = currentBen; break;
+    case '7':
+        currentObj = &taxi; break;
+
     case 'p': case 'P':
         currentBen = benObjs.getNext();
-//        currentBen = &benObjs[benIndex];
         break;
     case '[':
         currentPerson->speedUP(+0.01);

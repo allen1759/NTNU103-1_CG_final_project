@@ -12,8 +12,10 @@
 static const double PI = (3.1415926535);
 
 // control objects
+bool ControlBen = true;
 static CMyObject testOBJ;
-
+static CMyObject * currentObj = NULL;
+static CMyObject sphere;
 static CMyObject architecture;
 static CMyObject bridge;
 static CMyObject taxi;
@@ -35,7 +37,7 @@ static double zoomFactor = 0.5;
 static GLfloat diffuse0[]={1.0, 1.0, 1.0, 1.0};
 static GLfloat ambient0[]={1.0, 1.0, 1.0, 1.0};
 static GLfloat specular0[]={1.0, 1.0, 1.0, 1.0};
-static GLfloat light0_pos[]={3.0, 1.0, 0.0, 0.5};
+static GLfloat light0_pos[]={30.0, 10.0, 0.0, 0.5};
 static GLfloat light0_dir[]={-3.0, 0.0, 0.0, -0.5};
 static int light_theta = 0;
 

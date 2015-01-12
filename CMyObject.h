@@ -35,6 +35,7 @@ public:
     void goLeft();
     void goRight();
     void addThetaXZ(double the);
+    void adjustBound();
 
     static const double PI = 3.1415926535;
 protected:

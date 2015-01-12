@@ -54,26 +54,42 @@ void CMyObject::goFront()
     double rad = (double) (PI*(position.thetaXZ+position.thetaFront)/180.0);
     position.transX += (double) cos(rad)*walkSpeed;
     position.transZ += (double) sin(rad)*walkSpeed;
+    adjustBound();
 }
 void CMyObject::goBack()
 {
     double rad = (double) (PI*(position.thetaXZ+position.thetaFront)/180.0);
     position.transX -= (double) cos(rad)*walkSpeed;
     position.transZ -= (double) sin(rad)*walkSpeed;
+    adjustBound();
 }
 void CMyObject::goLeft()
 {
     double rad = (double) (PI*(position.thetaXZ+position.thetaFront-90.0)/180.0);
     position.transX += (double) cos(rad)*walkSpeed;
     position.transZ += (double) sin(rad)*walkSpeed;
+    adjustBound();
 }
 void CMyObject::goRight()
 {
     double rad = (double) (PI*(position.thetaXZ+position.thetaFront+90.0)/180.0);
     position.transX += (double) cos(rad)*walkSpeed;
     position.transZ += (double) sin(rad)*walkSpeed;
+    adjustBound();
 }
 void CMyObject::addThetaXZ(double the)
 {
     position.thetaXZ += the;
+}
+void CMyObject::adjustBound()
+{
+    cout << " x = " << position.transX << endl;
+    cout << " y = " << position.transY << endl;
+    cout << " z = " << position.transZ << endl;
+    if( position.transX > 20.0 ) position.transX = -20.0;
+    if( position.transX < -20.0 ) position.transX = 20.0;
+    if( position.transY > 20.0 ) position.transY = -20.0;
+    if( position.transY < -20.0 ) position.transY = 20.0;
+    if( position.transZ > 20.0 ) position.transZ = -20.0;
+    if( position.transZ < -20.0 ) position.transZ = 20.0;
 }
