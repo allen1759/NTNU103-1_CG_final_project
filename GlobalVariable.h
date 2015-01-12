@@ -11,6 +11,7 @@
 
 static const double PI = (3.1415926535);
 
+// control objects
 static CMyObject testOBJ;
 
 static CMyObject architecture;
@@ -22,6 +23,13 @@ static GLMmodel *myObj = NULL;
 static GLMmodel * objarray[30];
 static int benIndex = 0;
 
+// for look at
+static CgluEye * currentPerson;
+static CgluEye ThirdPerson;
+static CgluEye TaxiFirstPerson;
+
+static double zoomFactor = 0.5;
+
 // control light
 static GLfloat diffuse0[]={1.0, 1.0, 1.0, 1.0};
 static GLfloat ambient0[]={1.0, 1.0, 1.0, 1.0};
@@ -29,13 +37,6 @@ static GLfloat specular0[]={1.0, 1.0, 1.0, 1.0};
 static GLfloat light0_pos[]={3.0, 1.0, 0.0, 0.5};
 static GLfloat light0_dir[]={-3.0, 0.0, 0.0, -0.5};
 static int light_theta = 0;
-
-// for look at
-static CgluEye * currentPerson;
-static CgluEye ThirdPerson;
-static CgluEye FirstPerson;
-
-static double zoomFactor = 0.5;
 
 // for spin cube
 static GLfloat theta[] = {0.0,0.0,0.0};

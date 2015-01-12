@@ -91,6 +91,8 @@ int main(int argc, char **argv)
 
     ThirdPerson.setEye(0.0, 0.0, 2.0);
 
+    currentPerson = &TaxiFirstPerson;
+
     setShaders();
     glutMainLoop();
     return 0;
@@ -111,7 +113,8 @@ void display(void)
 {
 /* display callback, clear frame buffer and z buffer,
    rotate cube and draw, swap buffers */
-   ThirdPerson.updateLookAt();
+//   ThirdPerson.updateLookAt();
+
 
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -128,9 +131,19 @@ void display(void)
     GLfloat spotLightTheta = 40.0;
     glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, &spotLightTheta);
 
+    TaxiFirstPerson.setEye( taxi.GetTransX()-0.10*cos(PI*taxi.GetThetaXZ()/180.0)
+                          , taxi.GetTransY()+0.08
+                          , taxi.GetTransZ()-0.10*sin(PI*taxi.GetThetaXZ()/180.0) );
+    TaxiFirstPerson.setXZAng( taxi.GetThetaXZ() );
+
+    cout << "taxi thtaXZ = " << taxi.GetThetaXZ() << endl;
+
+    currentPerson->updateLookAt();
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    ThirdPerson.LookAt();
+//    ThirdPerson.LookAt();
+    currentPerson->LookAt();
 //glEnable(GL_COLOR_MATERIAL);
 
     drawOBJ();
@@ -160,22 +173,22 @@ void mouse(int btn, int state, int x, int y)
 
     if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
-		ThirdPerson.setISDrag(false);
-		ThirdPerson.dragXY(x, y);
-		ThirdPerson.setDrag(0.0, 0.0);
+		currentPerson->setISDrag(false);
+		currentPerson->dragXY(x, y);
+		currentPerson->setDrag(0.0, 0.0);
 	}
 	else if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-	    ThirdPerson.setISDrag(true);
-		ThirdPerson.setOldDrag(x, y);
+	    currentPerson->setISDrag(true);
+		currentPerson->setOldDrag(x, y);
 	}
 }
 
 void motion(int x, int y)
 {
 	if(!ThirdPerson.isDrag()) return;
-	ThirdPerson.setMotionDrag(x, y);
-    ThirdPerson.updateLookAt();
+	currentPerson->setMotionDrag(x, y);
+    currentPerson->updateLookAt();
 
 	glutPostRedisplay();
 }
@@ -324,10 +337,10 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
 //        currentBen = &benObjs[benIndex];
         break;
     case '[':
-        ThirdPerson.speedUP(+0.01);
+        currentPerson->speedUP(+0.01);
         break;
     case ']':
-        ThirdPerson.speedUP(-0.01);
+        currentPerson->speedUP(-0.01);
         break;
 
     case 'Y': case 'y':
@@ -377,21 +390,21 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
 
     // 前進, 後退指令
     case 'W': case 'w':
-        ThirdPerson.goFront();
+        currentPerson->goFront();
         break;
     case 'S': case 's':
-        ThirdPerson.goBack();
+        currentPerson->goBack();
         break;
     // 左移, 右移指令
     case 'Q': case 'q':
-        ThirdPerson.goLeft();
+        currentPerson->goLeft();
         break;
     case 'E': case 'e':
-        ThirdPerson.goRight();
+        currentPerson->goRight();
         break;
     // 上移, 下移指令
     case 'R': case 'r':
-        ThirdPerson.goFloorUp();
+        currentPerson->goFloorUp();
         break;
     case 'F': case 'f':
         ThirdPerson.goFloorDown();

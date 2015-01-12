@@ -19,6 +19,10 @@ public:
     void ReadOBJ(char filename[]) { myObj = glmReadOBJ(filename); }
     void Unitize() { glmUnitize(myObj); }
     void DrawOBJ();
+    GLdouble GetTransX() const { return position.transX; }
+    GLdouble GetTransY() const { return position.transY; }
+    GLdouble GetTransZ() const { return position.transZ; }
+    GLdouble GetThetaXZ() const { return position.thetaXZ+position.thetaFront; }
     void SetX(GLdouble x) { position.transX = x; }
     void SetY(GLdouble y) { position.transY = y; }
     void SetZ(GLdouble z) { position.transZ = z; }

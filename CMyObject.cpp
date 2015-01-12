@@ -5,7 +5,7 @@ using namespace std;
 CMyObject::CMyObject()
 {
     myObj = NULL;
-    walkSpeed = 0.08;
+    walkSpeed = 0.8;
 }
 
 CMyObject::CMyObject(char filename[])
