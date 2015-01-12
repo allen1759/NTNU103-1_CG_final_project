@@ -49,9 +49,6 @@ void CMyObject::DrawOBJ()
 
     glPopMatrix();
 }
-
-
-
 void CMyObject::goFront()
 {
     double rad = (double) (PI*(position.thetaXZ+position.thetaFront)/180.0);

@@ -11,13 +11,12 @@
 
 static const double PI = (3.1415926535);
 
-CMyObject testOBJ;
+static CMyObject testOBJ;
 
-CMyObject * currentBen = NULL;
-
-CMyObject architecture;
-CMyObject taxi;
-CObjGroup benObjs;
+static CMyObject architecture;
+static CMyObject taxi;
+static CMyObject * currentBen = NULL;
+static CObjGroup benObjs;
 
 static GLMmodel *myObj = NULL;
 static GLMmodel * objarray[30];
@@ -32,9 +31,11 @@ static GLfloat light0_dir[]={-3.0, 0.0, 0.0, -0.5};
 static int light_theta = 0;
 
 // for look at
-CgluEye ThirdPerson;
+static CgluEye * currentPerson;
+static CgluEye ThirdPerson;
+static CgluEye FirstPerson;
 
-double zoomFactor = 0.5;
+static double zoomFactor = 0.5;
 
 // for spin cube
 static GLfloat theta[] = {0.0,0.0,0.0};
@@ -42,11 +43,11 @@ static GLint axis = 2;
 static int moving = 0;
 
 // for drag function
-bool drag = false;
-double rotateX;			//拖曳後的相對座標，決定要旋轉幾度
-double rotateY;
-double old_rotateX;     //剛按下滑鼠時的視窗座標
-double old_rotateY;
+static bool drag = false;
+static double rotateX;			//拖曳後的相對座標，決定要旋轉幾度
+static double rotateY;
+static double old_rotateX;     //剛按下滑鼠時的視窗座標
+static double old_rotateY;
 
 // control texture mode
 static int wave_mode = 1;

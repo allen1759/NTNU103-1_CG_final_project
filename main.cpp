@@ -5,16 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-//#include <cstring>
 #include <string>
 #include <sstream>
 #include "GlobalVariable.h"
 #include "glm.h"
 #include "textfile.h"
 //#include "imageIO.c"
+#include "myFunction.h"
 using namespace std;
 
-void setProjectionMatrix (int width, int height);
+
 void drawOBJ();
 void display(void);
 void spinCube();
@@ -22,10 +22,12 @@ void mouse(int btn, int state, int x, int y);
 void motion(int x, int y);
 void keyboard(unsigned char key, int x, int y);
 void myReshape(int w, int h);
+void setShaders();
+void setProjectionMatrix (int width, int height);
+void keyboardSwitchCase(unsigned char key, int x, int y);
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 int printOglError(char *file, int line);
 void printInfoLog(GLhandleARB obj);
-void setShaders();
 
 
 int main(int argc, char **argv)
@@ -92,16 +94,6 @@ int main(int argc, char **argv)
     setShaders();
     glutMainLoop();
     return 0;
-}
-
-void setProjectionMatrix (int width, int height)
-{
-    static float rate;
-    if(width+height!=0) rate = 1.0*width/height;
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective (40.0*zoomFactor, rate, 0.01, 50);
-                                   /* 'zNear' 'zFar' */
 }
 
 void drawOBJ()
@@ -190,113 +182,7 @@ void motion(int x, int y)
 
 void keyboard(unsigned char key, int x, int y)
 {
-    switch (key)
-    {
-    case 0x1B:      // ESC key ASCII code
-        exit(0);
-        break;
-
-    case 'p': case 'P':
-        benIndex += 1;
-        benIndex %= 30;
-//        currentBen = &benObjs[benIndex];
-        break;
-    case '[':
-        ThirdPerson.speedUP(+0.01);
-        break;
-    case ']':
-        ThirdPerson.speedUP(-0.01);
-        break;
-
-    case 'Y': case 'y':
-        taxi.goFront();
-        break;
-    case 'H': case 'h':
-        taxi.goBack();
-        break;
-    case 'T': case 't':
-        taxi.goLeft();
-        break;
-    case 'U': case 'u':
-        taxi.goRight();
-        break;
-    case 'G': case 'g':
-        taxi.addThetaXZ( -30.0 );
-        break;
-    case 'J': case 'j':
-        taxi.addThetaXZ( +30.0 );
-        break;
-
-    case '+':
-        light_theta += 5;
-        if(light_theta >= 360) light_theta -= 360;
-        light0_pos[0] = 3.0 * cos(light_theta*PI/180);
-        light0_pos[1] = 3.0 * sin(light_theta*PI/180);
-        light0_dir[0] = light0_pos[0]*-1;
-        light0_dir[1] = light0_pos[1]*-1;
-        break;
-
-    case '-':
-        light_theta -= 5;
-        if(light_theta < 0) light_theta += 360;
-        light0_pos[0] = 3.0 * cos(light_theta*2*PI/180);
-        light0_pos[1] = 3.0 * sin(light_theta*2*PI/180);
-        light0_dir[0] = light0_pos[0]*-1;
-        light0_dir[1] = light0_pos[1]*-1;
-        break;
-
-    case ' ':
-        moving = !moving;
-        break;
-
-    case '`':
-        wave_mode=!wave_mode;
-        setShaders();
-        break;
-
-    // 前進, 後退指令
-    case 'W': case 'w':
-        ThirdPerson.goFront();
-        break;
-    case 'S': case 's':
-        ThirdPerson.goBack();
-        break;
-    // 左移, 右移指令
-    case 'Q': case 'q':
-        ThirdPerson.goLeft();
-        break;
-    case 'E': case 'e':
-        ThirdPerson.goRight();
-        break;
-    // 上移, 下移指令
-    case 'R': case 'r':
-        ThirdPerson.goFloorUp();
-        break;
-    case 'F': case 'f':
-        ThirdPerson.goFloorDown();
-        break;
-
-    // 旋轉指令
-    case 'A': case 'a':
-        ThirdPerson.addXZAng( -5.0 );
-        break;
-
-    case 'D': case 'd':
-        ThirdPerson.addXZAng( +5.0);
-        break;
-
-    // Zoom 指令
-    case 'n': case 'N':
-        if(zoomFactor >= 1.9) break;
-        zoomFactor += 0.05;
-        setProjectionMatrix(0, 0);
-        break;
-    case 'm': case 'M':
-        if(zoomFactor <=0.1) break;
-        zoomFactor -= 0.05;
-        setProjectionMatrix(0, 0);
-        break;
-    }
+    keyboardSwitchCase(key, x, y);
     ThirdPerson.updateLookAt();
 
     glutPostRedisplay();
@@ -315,41 +201,6 @@ void myReshape(int windoww, int windowh)
     glMatrixMode(GL_MODELVIEW);
 }
 
-int printOglError(char *file, int line)
-{
-    //
-    // Returns 1 if an OpenGL error occurred, 0 otherwise.
-    //
-    GLenum glErr;
-    int    retCode = 0;
-
-    glErr = glGetError();
-    while (glErr != GL_NO_ERROR)
-    {
-        printf("glError in file %s @ line %d: %s\n", file, line, gluErrorString(glErr));
-        retCode = 1;
-        glErr = glGetError();
-    }
-    return retCode;
-}
-
-void printInfoLog(GLhandleARB obj)
-{
-    int infologLength = 0;
-    int charsWritten  = 0;
-    char *infoLog;
-
-	glGetObjectParameterivARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB,
-                                         &infologLength);
-
-    if (infologLength > 0)
-    {
-        infoLog = (char *)malloc(infologLength);
-        glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
-		printf("%s\n",infoLog);
-        free(infoLog);
-    }
-}
 
 void setShaders()
 {
@@ -412,5 +263,162 @@ void setShaders()
     glUniform4fARB(glGetUniformLocationARB(p, "l_diffuse"), 1.0, 1.0, 1.0, 1.0 );
     glUniform4fARB(glGetUniformLocationARB(p, "l_specular"), 1.0, 1.0, 1.0, 1.0 );
 }
+
+int printOglError(char *file, int line)
+{
+    //
+    // Returns 1 if an OpenGL error occurred, 0 otherwise.
+    //
+    GLenum glErr;
+    int    retCode = 0;
+
+    glErr = glGetError();
+    while (glErr != GL_NO_ERROR)
+    {
+        printf("glError in file %s @ line %d: %s\n", file, line, gluErrorString(glErr));
+        retCode = 1;
+        glErr = glGetError();
+    }
+    return retCode;
+}
+
+void printInfoLog(GLhandleARB obj)
+{
+    int infologLength = 0;
+    int charsWritten  = 0;
+    char *infoLog;
+
+	glGetObjectParameterivARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB,
+                                         &infologLength);
+
+    if (infologLength > 0)
+    {
+        infoLog = (char *)malloc(infologLength);
+        glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
+		printf("%s\n",infoLog);
+        free(infoLog);
+    }
+}
+
+void setProjectionMatrix (int width, int height)
+{
+    static float rate;
+    if(width+height!=0) rate = 1.0*width/height;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective (40.0*zoomFactor, rate, 0.01, 50);
+                                   /* 'zNear' 'zFar' */
+}
+
+void keyboardSwitchCase(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    case 0x1B:      // ESC key ASCII code
+        exit(0);
+        break;
+
+    case 'p': case 'P':
+        benIndex += 1;
+        benIndex %= 30;
+//        currentBen = &benObjs[benIndex];
+        break;
+    case '[':
+        ThirdPerson.speedUP(+0.01);
+        break;
+    case ']':
+        ThirdPerson.speedUP(-0.01);
+        break;
+
+    case 'Y': case 'y':
+        taxi.goFront();
+        break;
+    case 'H': case 'h':
+        taxi.goBack();
+        break;
+    case 'T': case 't':
+        taxi.goLeft();
+        break;
+    case 'U': case 'u':
+        taxi.goRight();
+        break;
+    case 'G': case 'g':
+        taxi.addThetaXZ( -30.0 );
+        break;
+    case 'J': case 'j':
+        taxi.addThetaXZ( +30.0 );
+        break;
+
+    case '+':
+        light_theta += 5;
+        if(light_theta >= 360) light_theta -= 360;
+        light0_pos[0] = 3.0 * cos(light_theta*PI/180);
+        light0_pos[1] = 3.0 * sin(light_theta*PI/180);
+        light0_dir[0] = light0_pos[0]*-1;
+        light0_dir[1] = light0_pos[1]*-1;
+        break;
+
+    case '-':
+        light_theta -= 5;
+        if(light_theta < 0) light_theta += 360;
+        light0_pos[0] = 3.0 * cos(light_theta*2*PI/180);
+        light0_pos[1] = 3.0 * sin(light_theta*2*PI/180);
+        light0_dir[0] = light0_pos[0]*-1;
+        light0_dir[1] = light0_pos[1]*-1;
+        break;
+
+    case ' ':
+        moving = !moving;
+        break;
+
+    case '`':
+        wave_mode=!wave_mode;
+        break;
+
+    // 前進, 後退指令
+    case 'W': case 'w':
+        ThirdPerson.goFront();
+        break;
+    case 'S': case 's':
+        ThirdPerson.goBack();
+        break;
+    // 左移, 右移指令
+    case 'Q': case 'q':
+        ThirdPerson.goLeft();
+        break;
+    case 'E': case 'e':
+        ThirdPerson.goRight();
+        break;
+    // 上移, 下移指令
+    case 'R': case 'r':
+        ThirdPerson.goFloorUp();
+        break;
+    case 'F': case 'f':
+        ThirdPerson.goFloorDown();
+        break;
+
+    // 旋轉指令
+    case 'A': case 'a':
+        ThirdPerson.addXZAng( -5.0 );
+        break;
+
+    case 'D': case 'd':
+        ThirdPerson.addXZAng( +5.0);
+        break;
+
+    // Zoom 指令
+    case 'n': case 'N':
+        if(zoomFactor >= 1.9) break;
+        zoomFactor += 0.05;
+        setProjectionMatrix(0, 0);
+        break;
+    case 'm': case 'M':
+        if(zoomFactor <=0.1) break;
+        zoomFactor -= 0.05;
+        setProjectionMatrix(0, 0);
+        break;
+    }
+}
+
 
 
