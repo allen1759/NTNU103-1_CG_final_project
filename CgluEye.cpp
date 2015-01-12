@@ -13,13 +13,14 @@ CgluEye::CgluEye()
     drag_ = false;
 }
 
-CgluEye::CgluEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat a1, GLfloat a2, GLfloat a3, GLfloat XZ)
+CgluEye::CgluEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat XZ, GLfloat Y)
 {
     sEye[0] = s1; sEye[1] = s2; sEye[2] = s3;
-    sAt[0]  = a1; sAt[1]  = a2; sAt[2]  = a3;
+    //sAt[0]  = a1; sAt[1]  = a2; sAt[2]  = a3;
     sNor[0] = 0.0; sNor[1] = 1.0; sNor[2] = 0.0;
     xzAng = XZ;
-    walkSpeed = 0.02;
+    yAng = Y;
+    walkSpeed = 0.08;
     dragSpeed = 10.0;
     lookDist = 0.0001;
     drag_ = false;
@@ -34,12 +35,12 @@ CgluEye::~CgluEye()
 void CgluEye::setEye(GLfloat s[])
 {
     for(int i=0; i<3; i+=1) sEye[i] = s[i];
-    for(int i=0; i<3; i+=1) sAt[i]  = s[3+i];
-    xzAng = s[6];
+    xzAng = s[3];
+    yAng = s[4];
 }
-void CgluEye::setEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat a1, GLfloat a2, GLfloat a3, GLfloat XZ)
+void CgluEye::setEye(GLfloat s1, GLfloat s2, GLfloat s3, GLfloat XZ, GLfloat Y)
 {
-    GLfloat tmp[] = { s1, s2, s3, a1, a2, a3, XZ };
+    GLfloat tmp[] = { s1, s2, s3, XZ, Y };
     setEye( tmp );
 }
 void CgluEye::setNor(GLfloat n[])

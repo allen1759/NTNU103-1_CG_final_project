@@ -73,12 +73,14 @@ int main(int argc, char **argv)
     //currentBen = & testOBJ;
     architecture.ReadOBJ("object/Street/Street_environment_V01.obj");
     architecture.Unitize();
+    architecture.SetScale(10);
+    architecture.SetY(0.72);
 
     taxi.ReadOBJ("object/car/Car_02_Obj.obj");
     taxi.Unitize();
-    taxi.SetScale(0.2);
+    taxi.SetScale(0.8);
 
-    ThirdPerson.setEye(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    ThirdPerson.setEye(0.0, 0.0, 0.0);
 
     setShaders();
     glutMainLoop();
@@ -230,8 +232,7 @@ void keyboard(unsigned char key, int x, int y)
         moving = !moving;
         break;
 
-    case 't':
-    case 'T':
+    case 't': case 'T':
         wave_mode=!wave_mode;
         setShaders();
         break;

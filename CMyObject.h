@@ -19,6 +19,9 @@ public:
     void ReadOBJ(char filename[]) { myObj = glmReadOBJ(filename); }
     void Unitize() { glmUnitize(myObj); }
     void DrawOBJ();
+    void SetX(GLdouble x) { position.transX = x; }
+    void SetY(GLdouble y) { position.transY = y; }
+    void SetZ(GLdouble z) { position.transZ = z; }
     void SetScale(GLdouble s) { position.scale = s; }
 
 protected:
