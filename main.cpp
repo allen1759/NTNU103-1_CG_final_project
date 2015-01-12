@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <math.h>
 #include <string>
 #include <sstream>
@@ -32,6 +33,7 @@ void printInfoLog(GLhandleARB obj);
 
 int main(int argc, char **argv)
 {
+    srand( time(NULL) );
     glutInit(&argc, argv);
 
 /* need both double buffering and z buffer */
@@ -83,6 +85,9 @@ int main(int argc, char **argv)
     taxi.SetScale(0.8);
     taxi.SetThetaFront(-90.0);
 
+    bridge.ReadOBJ("object/pontez/pontez.obj");
+    bridge.Unitize();
+    bridge.SetScale(10.0);
 
 //    testOBJ.ReadOBJ("object/T-Rex/T-Rex_Model.obj");
 //    testOBJ.ReadOBJ("object/pontez/pontez.obj");
@@ -102,10 +107,49 @@ void drawOBJ()
 {
     architecture.DrawOBJ();
 //    glPushMatrix();
-    taxi.DrawOBJ();
+//      glTranslated(-19.9, 0, 0);
+//      architecture.DrawOBJ();
+//    glPopMatrix();
+//    glPushMatrix();
+//      glTranslated(+19.9, 0, 0);
+//      architecture.DrawOBJ();
+//    glPopMatrix();
+//    glPushMatrix();
+//      glTranslated(0, 0, +19.4);
+//      architecture.DrawOBJ();
+//    glPopMatrix();
+//    glPushMatrix();
+//      glTranslated(0, 0, -19.4);
+//      architecture.DrawOBJ();
 //    glPopMatrix();
 
-//    testOBJ.DrawOBJ();
+//    glPushMatrix();
+//        glTranslated(-17.8, -0.3, 0.2);
+//        glRotated(180, 0, 1, 0);
+//        bridge.DrawOBJ();
+//    glPopMatrix();
+//    glPushMatrix();
+//        glTranslated(+17.8, -0.3, 0.2);
+//        glRotated(-180, 0, 1, 0);
+//        bridge.DrawOBJ();
+//    glPopMatrix();
+    glPushMatrix();
+        glTranslated(-1.0, -0.3, -17.3);
+        glRotated(90, 0, 1, 0);
+        bridge.DrawOBJ();
+    glPopMatrix();
+    glPushMatrix();
+        glTranslated(-1.0, -0.3, +17.3);
+        glRotated(-90, 0, 1, 0);
+        bridge.DrawOBJ();
+    glPopMatrix();
+
+    double updown = (rand()%100-50)/100.0 * 0.01;
+    GLdouble originY = taxi.GetTransY();
+    taxi.SetY( originY + updown );
+    taxi.DrawOBJ();
+    taxi.SetY( originY );
+
     //currentBen->DrawOBJ();
 }
 
@@ -136,7 +180,6 @@ void display(void)
                           , taxi.GetTransZ()-0.10*sin(PI*taxi.GetThetaXZ()/180.0) );
     TaxiFirstPerson.setXZAng( taxi.GetThetaXZ() );
 
-    cout << "taxi thtaXZ = " << taxi.GetThetaXZ() << endl;
 
     currentPerson->updateLookAt();
 
@@ -148,7 +191,7 @@ void display(void)
 
     drawOBJ();
 
-  glFlush();
+  //glFlush();
   glutSwapBuffers();
 }
 
@@ -213,7 +256,6 @@ void myReshape(int windoww, int windowh)
 //            2.0 * (GLfloat) w / (GLfloat) h, -2.0, 2.0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
 }
-
 
 void setShaders()
 {
@@ -319,7 +361,7 @@ void setProjectionMatrix (int width, int height)
     if(width+height!=0) rate = 1.0*width/height;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (40.0*zoomFactor, rate, 0.01, 50);
+    gluPerspective (90.0*zoomFactor, rate, 0.01, 50);
                                    /* 'zNear' 'zFar' */
 }
 
@@ -331,9 +373,18 @@ void keyboardSwitchCase(unsigned char key, int x, int y)
         exit(0);
         break;
 
+    case '1':
+        ThirdPerson.setEye( currentPerson->getEye(0),
+                            currentPerson->getEye(1),
+                            currentPerson->getEye(2) );
+        ThirdPerson.setXZAng( currentPerson->getXZAng() );
+        currentPerson = &ThirdPerson;
+        break;
+    case '3':
+        currentPerson = &TaxiFirstPerson; break;
+
     case 'p': case 'P':
-        benIndex += 1;
-        benIndex %= 30;
+        currentBen = benObjs.getNext();
 //        currentBen = &benObjs[benIndex];
         break;
     case '[':

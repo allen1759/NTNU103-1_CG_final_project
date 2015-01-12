@@ -28,6 +28,8 @@ public:
     void addXZAng(GLfloat ang) { xzAng += ang; adjust(); }
     void setYAng(GLfloat ang) { yAng = ang; adjust(); }
     void addYAng(GLfloat ang) { yAng += ang; adjust(); }
+    GLfloat getEye(int i) const { return sEye[i]; }
+    GLfloat getXZAng() const { return xzAng; }
 
     void setDrag(GLfloat x, GLfloat y) { dragX=x; dragY=y; }
     void setMotionDrag(int x, int y) { setDrag( (x - old_dragX)/dragSpeed, (y - old_dragY)/dragSpeed );}

@@ -15,6 +15,7 @@ static const double PI = (3.1415926535);
 static CMyObject testOBJ;
 
 static CMyObject architecture;
+static CMyObject bridge;
 static CMyObject taxi;
 static CMyObject * currentBen = NULL;
 static CObjGroup benObjs;
